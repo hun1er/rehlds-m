@@ -1,0 +1,165 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+template: |
+  # What's Changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+
+autolabeler:
+  - label: 'breaking'
+    body:
+      - '/BREAKING CHANGE: .+/i'
+    title:
+      - '/!:/'
+
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix: .+/'
+
+  - label: 'build'
+    files:
+      - '*.cmake'
+      - '**/cmake/**'
+      - 'CMakeLists.txt'
+      - 'CMakePresets.json'
+    branch:
+      - '/build\/.+/'
+    title:
+      - '/build: .+/'
+
+  - label: 'chore'
+    files:
+      - '.clang-tidy'
+      - '.cppcheck_suppressions'
+      - '.gitattributes'
+      - '.gitignore'
+      - '*.rc.in'
+      - 'LICENSE'
+    branch:
+      - '/chore\/.+/'
+    title:
+      - '/chore: .+/'
+
+  - label: 'ci'
+    files:
+      - '.github/**'
+    branch:
+      - '/ci\/.+/'
+    title:
+      - '/ci: .+/'
+
+  - label: 'documentation'
+    files:
+      - '*.md'
+      - '*.rst'
+      - 'docs/**'
+    branch:
+      - '/docs\/.+/'
+    title:
+      - '/docs: .+/'
+
+  - label: 'enhancement'
+    branch:
+      - '/feat\/.+/'
+    title:
+      - '/feat: .+/'
+
+  - label: 'improvement'
+    branch:
+      - '/improvement\/.+/'
+    title:
+      - '/improvement: .+/'
+
+  - label: 'performance'
+    branch:
+      - '/perf\/.+/'
+    title:
+      - '/perf: .+/'
+
+  - label: 'refactoring'
+    branch:
+      - '/refactor\/.+/'
+    title:
+      - '/refactor: .+/'
+
+  - label: 'revert'
+    branch:
+      - '/revert\/.+/'
+    title:
+      - '/revert: .+/'
+
+  - label: 'style'
+    files:
+      - '.clang-format'
+      - '.editorconfig'
+    branch:
+      - '/style\/.+/'
+    title:
+      - '/style: .+/'
+
+  - label: 'tests'
+    files:
+      - '**/test/**'
+    branch:
+      - '/test\/.+/'
+    title:
+      - '/test: .+/'
+
+categories:
+  - title: ':warning: Breaking changes'
+    labels:
+      - 'breaking'
+
+  - title: ':rocket: Features'
+    labels:
+      - 'enhancement'
+
+  - title: ':thumbsup: Improvements'
+    labels:
+      - 'improvement'
+      - 'performance'
+      - 'refactoring'
+
+  - title: ':bug: Bug Fixes'
+    labels:
+      - 'bug'
+
+  # - title: ':books: Documentation'
+  #   labels:
+  #     - 'documentation'
+
+  - title: ':white_check_mark: Tests'
+    labels:
+      - 'tests'
+
+  - title: ':hammer: Maintenance'
+    labels:
+      - 'build'
+      - 'chore'
+      - 'ci'
+      - 'revert'
+      - 'style'
+
+version-resolver:
+  major:
+    labels:
+      - 'breaking'
+
+  minor:
+    labels:
+      - 'enhancement'
+
+  patch:
+    labels:
+      - 'bug'
+      - 'improvement'
+      - 'performance'
+      - 'refactoring'
+
+exclude-labels:
+  - 'skip-changelog'
