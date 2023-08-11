@@ -1,0 +1,523 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "description": "Base configuration with common settings and options",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "warnings": {
+        "deprecated": true,
+        "dev": true,
+        "systemVars": true,
+        "uninitialized": false,
+        "unusedCli": false
+      },
+      "architecture": {
+        "value": "x86",
+        "strategy": "external"
+      },
+      "hidden": true
+    },
+    {
+      "name": "windows",
+      "description": "Building on Windows systems",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_SIMULATE_ID": "MSVC",
+        "CMAKE_CXX_SIMULATE_ID": "MSVC"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [ "Windows" ]
+        }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "hidden": true
+    },
+    {
+      "name": "linux",
+      "description": "Building on Linux systems",
+      "generator": "Unix Makefiles",
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [ "Linux" ]
+        },
+        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+          "copySources": true,
+          "copyBuildOutput": true,
+          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}",
+          "copySourcesOptions": {
+            "exclusionList": [ ".git", ".vs", "bin", "build", "out" ]
+          }
+        }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "hidden": true
+    },
+    {
+      "name": "debug",
+      "description": "Building with debug information",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "hidden": true
+    },
+    {
+      "name": "release",
+      "description": "Building with optimizations for release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "hidden": true
+    },
+    {
+      "name": "minsizerel",
+      "description": "Building with optimizations for minimum size",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "MinSizeRel"
+      },
+      "hidden": true
+    },
+    {
+      "name": "relwithdebinfo",
+      "description": "Building with optimizations and debug information",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      },
+      "hidden": true
+    },
+    {
+      "name": "msvc",
+      "description": "Building with the Microsoft Visual C++ compiler",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "inheritEnvironments": "msvc_x86_x64",
+          "intelliSenseMode": "windows-msvc-x86"
+        }
+      },
+      "hidden": true
+    },
+    {
+      "name": "clang-cl",
+      "description": "Building with the Clang-CL compiler",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "CMAKE_C_COMPILER_TARGET": "i386-pc-windows-msvc",
+        "CMAKE_CXX_COMPILER_TARGET": "i386-pc-windows-msvc"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "inheritEnvironments": [ "msvc_x86_x64", "clang_cl_x86" ],
+          "intelliSenseMode": "windows-clang-x86"
+        }
+      },
+      "hidden": true
+    },
+    {
+      "name": "gcc",
+      "description": "Building with the GNU Compiler Collection",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "inheritEnvironments": "linux_x86",
+          "intelliSenseMode": "linux-gcc-x86"
+        }
+      },
+      "hidden": true
+    },
+    {
+      "name": "clang",
+      "description": "Building with the Clang compiler",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      },
+      "hidden": true
+    },
+    {
+      "name": "intel-llvm",
+      "description": "Building with the Intel LLVM compiler",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "icx",
+        "CMAKE_CXX_COMPILER": "icpx"
+      },
+      "hidden": true
+    },
+    {
+      "name": "windows-debug",
+      "inherits": [ "base", "windows", "debug" ]
+    },
+    {
+      "name": "windows-release",
+      "inherits": [ "base", "windows", "release" ]
+    },
+    {
+      "name": "windows-minsizerel",
+      "inherits": [ "base", "windows", "minsizerel" ]
+    },
+    {
+      "name": "windows-relwithdebinfo",
+      "inherits": [ "base", "windows", "relwithdebinfo" ]
+    },
+    {
+      "name": "windows-unit-tests",
+      "description": "Build with optimizations for release and unit tests enabled",
+      "inherits": [ "base", "windows", "release" ],
+      "cacheVariables": {
+        "BUILD_UNIT_TESTS": "ON"
+      }
+    },
+    {
+      "name": "windows-cppcheck",
+      "description": "Build with the MSVC compiler and Cppcheck static analysis enabled",
+      "inherits": [ "base", "windows", "msvc", "debug" ],
+      "cacheVariables": {
+        "ENABLE_CPPCHECK": "ON"
+      }
+    },
+    {
+      "name": "windows-pvs-studio",
+      "description": "Build with the MSVC compiler and PVS-Studio static analysis enabled",
+      "inherits": [ "base", "windows", "msvc", "debug" ],
+      "cacheVariables": {
+        "ENABLE_PVS_STUDIO": "ON"
+      }
+    },
+    {
+      "name": "windows-clang-tidy",
+      "description": "Build with the Clang-CL compiler and Clang-Tidy static analysis enabled",
+      "inherits": [ "base", "windows", "clang-cl", "debug" ],
+      "cacheVariables": {
+        "ENABLE_CLANG_TIDY": "ON"
+      }
+    },
+    {
+      "name": "windows-iwyu",
+      "description": "Build with the Clang-CL compiler and Include What You Use static analysis enabled",
+      "inherits": [ "base", "windows", "clang-cl", "relwithdebinfo" ],
+      "cacheVariables": {
+        "ENABLE_IWYU": "ON"
+      }
+    },
+    {
+      "name": "windows-release-clang",
+      "description": "Build with the Clang-CL compiler optimized for release",
+      "inherits": [ "base", "windows", "clang-cl", "release" ]
+    },
+    {
+      "name": "linux-debug",
+      "inherits": [ "base", "linux", "debug" ]
+    },
+    {
+      "name": "linux-release",
+      "inherits": [ "base", "linux", "release" ]
+    },
+    {
+      "name": "linux-minsizerel",
+      "inherits": [ "base", "linux", "minsizerel" ]
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "inherits": [ "base", "linux", "relwithdebinfo" ]
+    },
+    {
+      "name": "linux-unit-tests",
+      "description": "Build with optimizations for release and unit tests enabled",
+      "inherits": [ "base", "linux", "release" ],
+      "cacheVariables": {
+        "BUILD_UNIT_TESTS": "ON"
+      }
+    },
+    {
+      "name": "linux-cppcheck",
+      "description": "Build with the GCC compiler and Cppcheck static analysis enabled",
+      "inherits": [ "base", "linux", "gcc", "debug" ],
+      "cacheVariables": {
+        "ENABLE_CPPCHECK": "ON"
+      }
+    },
+    {
+      "name": "linux-pvs-studio",
+      "description": "Build with the GCC compiler and PVS-Studio static analysis enabled",
+      "inherits": [ "base", "linux", "gcc", "debug" ],
+      "cacheVariables": {
+        "ENABLE_PVS_STUDIO": "ON"
+      }
+    },
+    {
+      "name": "linux-clang-tidy",
+      "description": "Build with the Clang compiler and Clang-Tidy static analysis enabled",
+      "inherits": [ "base", "linux", "clang", "debug" ],
+      "cacheVariables": {
+        "ENABLE_CLANG_TIDY": "ON"
+      }
+    },
+    {
+      "name": "linux-iwyu",
+      "description": "Build with the Clang compiler and Include What You Use static analysis enabled",
+      "inherits": [ "base", "linux", "clang", "relwithdebinfo" ],
+      "cacheVariables": {
+        "ENABLE_IWYU": "ON"
+      }
+    },
+    {
+      "name": "linux-release-intel",
+      "description": "Build with the Intel LLVM compiler optimized for release",
+      "inherits": [ "base", "linux", "intel-llvm", "release" ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "base",
+      "description": "Base configuration with common settings and options",
+      "verbose": false,
+      "hidden": true
+    },
+    {
+      "name": "windows",
+      "description": "Building on Windows systems",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "hidden": true
+    },
+    {
+      "name": "linux",
+      "description": "Building on Linux systems",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "hidden": true
+    },
+    {
+      "name": "windows-debug",
+      "displayName": "Debug",
+      "configurePreset": "windows-debug",
+      "configuration": "Debug",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-release",
+      "displayName": "Release",
+      "configurePreset": "windows-release",
+      "configuration": "Release",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-minsizerel",
+      "displayName": "Minimum Size Release",
+      "configurePreset": "windows-minsizerel",
+      "configuration": "MinSizeRel",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-relwithdebinfo",
+      "displayName": "Release With Debug Info",
+      "configurePreset": "windows-relwithdebinfo",
+      "configuration": "RelWithDebInfo",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-unit-tests",
+      "displayName": "Unit Tests",
+      "description": "Build with optimizations for release and unit tests enabled",
+      "configurePreset": "windows-unit-tests",
+      "configuration": "Release",
+      "inherits": [ "base", "windows" ],
+      "targets": [ "hlds", "hlds_tests" ]
+    },
+    {
+      "name": "windows-cppcheck",
+      "displayName": "Cppcheck",
+      "description": "Build with the MSVC compiler and Cppcheck static analysis enabled",
+      "configurePreset": "windows-cppcheck",
+      "configuration": "Debug",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-pvs-studio",
+      "displayName": "PVS-Studio",
+      "description": "Build with the MSVC compiler and PVS-Studio static analysis enabled",
+      "configurePreset": "windows-pvs-studio",
+      "configuration": "Debug",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-clang-tidy",
+      "displayName": "Clang-Tidy",
+      "description": "Build with the Clang-CL compiler and Clang-Tidy static analysis enabled",
+      "configurePreset": "windows-clang-tidy",
+      "configuration": "Debug",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-iwyu",
+      "displayName": "Include What You Use",
+      "description": "Build with the Clang-CL compiler and Include What You Use static analysis enabled",
+      "configurePreset": "windows-iwyu",
+      "configuration": "RelWithDebInfo",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "windows-release-clang",
+      "displayName": "Release Clang-CL",
+      "configurePreset": "windows-release-clang",
+      "configuration": "Release",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "linux-debug",
+      "displayName": "Debug",
+      "configurePreset": "linux-debug",
+      "configuration": "Debug",
+      "inherits": [ "base", "linux" ]
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Release",
+      "configurePreset": "linux-release",
+      "configuration": "Release",
+      "inherits": [ "base", "linux" ]
+    },
+    {
+      "name": "linux-minsizerel",
+      "displayName": "Minimum Size Release",
+      "configurePreset": "linux-minsizerel",
+      "configuration": "MinSizeRel",
+      "inherits": [ "base", "linux" ]
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "displayName": "Release With Debug Info",
+      "configurePreset": "linux-relwithdebinfo",
+      "configuration": "RelWithDebInfo",
+      "inherits": [ "base", "linux" ]
+    },
+    {
+      "name": "linux-unit-tests",
+      "displayName": "Unit Tests",
+      "description": "Build with optimizations for release and unit tests enabled",
+      "configurePreset": "linux-unit-tests",
+      "configuration": "Release",
+      "inherits": [ "base", "linux" ],
+      "targets": [ "hlds", "hlds_tests" ]
+    },
+    {
+      "name": "linux-cppcheck",
+      "displayName": "Cppcheck",
+      "description": "Build with the GCC compiler and Cppcheck static analysis enabled",
+      "configurePreset": "linux-cppcheck",
+      "configuration": "Debug",
+      "inherits": [ "base", "linux" ]
+    },
+    {
+      "name": "linux-pvs-studio",
+      "displayName": "PVS-Studio",
+      "description": "Build with the GCC compiler and PVS-Studio static analysis enabled",
+      "configurePreset": "linux-pvs-studio",
+      "configuration": "Debug",
+      "inherits": [ "base", "linux" ],
+      "targets": [ "pvs_analysis" ]
+    },
+    {
+      "name": "linux-clang-tidy",
+      "displayName": "Clang-Tidy",
+      "description": "Build with the Clang compiler and Clang-Tidy static analysis enabled",
+      "configurePreset": "linux-clang-tidy",
+      "configuration": "Debug",
+      "inherits": [ "base", "linux" ]
+    },
+    {
+      "name": "linux-iwyu",
+      "displayName": "Include What You Use",
+      "description": "Build with the Clang compiler and Include What You Use static analysis enabled",
+      "configurePreset": "linux-iwyu",
+      "configuration": "RelWithDebInfo",
+      "inherits": [ "base", "linux" ]
+    },
+    {
+      "name": "linux-release-intel",
+      "displayName": "Release Intel LLVM",
+      "description": "Build with the Intel LLVM compiler optimized for release",
+      "configurePreset": "linux-release-intel",
+      "configuration": "Release",
+      "inherits": [ "base", "linux" ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "base",
+      "description": "Base test preset with common settings and options",
+      "configuration": "Release",
+      "output": {
+        "verbosity": "default",
+        "shortProgress": true,
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true,
+        "timeout": 10
+      },
+      "hidden": true
+    },
+    {
+      "name": "windows",
+      "description": "Testing on Windows systems",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "hidden": true
+    },
+    {
+      "name": "linux",
+      "description": "Testing on Linux systems",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "hidden": true
+    },
+    {
+      "name": "windows-all",
+      "displayName": "All Tests",
+      "description": "Run all tests",
+      "configurePreset": "windows-unit-tests",
+      "inherits": [ "base", "windows" ]
+    },
+    {
+      "name": "linux-all",
+      "displayName": "All Tests",
+      "description": "Run all tests",
+      "configurePreset": "linux-unit-tests",
+      "inherits": [ "base", "linux" ]
+    }
+  ]
+}
