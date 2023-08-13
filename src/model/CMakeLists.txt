@@ -22,7 +22,7 @@ add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
 
 # Common sources
 target_sources("${PNAME_LOWER}"
-  PUBLIC
+  PRIVATE
     "cmdline_args.cpp"
     "cmdline_args.hpp"
     "console_commands.cpp"
@@ -36,18 +36,18 @@ target_sources("${PNAME_LOWER}"
 
 if(WIN32) # Windows sources
   target_sources("${PNAME_LOWER}"
-    PUBLIC
+    PRIVATE
       "windows/server_loop.cpp"
   )
 else() # Unix sources
   target_sources("${PNAME_LOWER}"
-    PUBLIC
+    PRIVATE
       "linux/server_loop.cpp"
   )
 endif()
 
 target_compile_definitions("${PNAME_LOWER}"
-  PUBLIC
+  PRIVATE
     $<$<PLATFORM_ID:Windows>:
       NOMINMAX
     >

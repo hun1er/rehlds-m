@@ -17,7 +17,7 @@ set(SPDLOG_ENABLE_PCH OFF CACHE INTERNAL
   "Build static or shared library using precompiled header to speed up compilation time." FORCE
 )
 
-set(SPDLOG_BUILD_PIC ON CACHE INTERNAL
+set(SPDLOG_BUILD_PIC ${BUILD_SHARED_LIBS} CACHE INTERNAL
   "Build position independent code (-fPIC)." FORCE
 )
 

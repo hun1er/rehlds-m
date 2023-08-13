@@ -22,7 +22,7 @@ add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
 
 # Common sources
 target_sources("${PNAME_LOWER}"
-  PUBLIC
+  PRIVATE
     "circular_buffer.hpp"
     "console.hpp"
     "file.cpp"
@@ -42,7 +42,7 @@ target_sources("${PNAME_LOWER}"
 
 if(WIN32) # Windows sources
   target_sources("${PNAME_LOWER}"
-    PUBLIC
+    PRIVATE
       "windows/console.cpp"
       "windows/console.hpp"
       "windows/system/crash_dumper.cpp"
@@ -59,7 +59,7 @@ if(WIN32) # Windows sources
   )
 else() # Unix sources
   target_sources("${PNAME_LOWER}"
-    PUBLIC
+    PRIVATE
       "linux/console.cpp"
       "linux/console.hpp"
       "linux/signal.cpp"
@@ -83,8 +83,8 @@ target_include_directories("${PNAME_LOWER}"
 target_link_libraries("${PNAME_LOWER}"
   PUBLIC
     "Abstract::abstract"
-    "fmt::fmt-header-only"
-    "spdlog::spdlog_header_only"
+    "fmt::fmt"
+    "spdlog::spdlog"
     "StringPy::stringpy"
 
     $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:

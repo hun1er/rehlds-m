@@ -20,7 +20,7 @@ add_library("${PNAME_LOWER}")
 add_library("View::console" ALIAS "${PNAME_LOWER}")
 
 target_sources("${PNAME_LOWER}"
-  PUBLIC
+  PRIVATE
     "console_input.cpp"
     "console_input.hpp"
     "console_view.hpp"
@@ -28,14 +28,14 @@ target_sources("${PNAME_LOWER}"
 
 if(WIN32) # Windows sources
   target_sources("${PNAME_LOWER}"
-    PUBLIC
+    PRIVATE
       "windows/console_input.cpp"
       "windows/console_view.cpp"
       "windows/console_view.hpp"
   )
 else() # Unix sources
   target_sources("${PNAME_LOWER}"
-    PUBLIC
+    PRIVATE
       "linux/console_input.cpp"
       "linux/console_view.hpp"
       "linux/terminal_settings.hpp"
@@ -55,7 +55,7 @@ target_include_directories("${PNAME_LOWER}"
 target_link_libraries("${PNAME_LOWER}"
   PUBLIC
     "Abstract::abstract"
-    "fmt::fmt-header-only"
+    "fmt::fmt"
     "Threads::Threads"
     "Util::util"
 )
