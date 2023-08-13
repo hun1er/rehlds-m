@@ -28,6 +28,11 @@ namespace view
             // Block the SIGTTIN and SIGTTOU signals to prevent the process from being stopped
             const util::ScopedSignalBlocker signal_blocker{SIGTTIN, SIGTTOU};
 
+            // Check if the standard input is connected to a terminal
+            if (is_stdin_terminal_ = (::isatty(STDIN_FILENO) != 0); !is_stdin_terminal_) {
+                return;
+            }
+
             // Get the current terminal attributes and save them
             if (0 == ::tcgetattr(STDIN_FILENO, &original_attributes_)) {
                 std::memcpy(&modified_attributes_, &original_attributes_, sizeof(termios));
@@ -64,6 +69,10 @@ namespace view
          */
         ~ScopedTerminalSettings()
         {
+            if (!is_stdin_terminal_) {
+                return;
+            }
+
             // Block the SIGTTIN and SIGTTOU signals to prevent the process from being stopped
             const util::ScopedSignalBlocker signal_blocker{SIGTTIN, SIGTTOU};
 
@@ -74,6 +83,9 @@ namespace view
         }
 
       private:
+        /// Whether the standard input is connected to a terminal.
+        bool is_stdin_terminal_{};
+
         /// The original terminal attributes before modification.
         ::termios original_attributes_{};
 
