@@ -92,10 +92,7 @@ target_link_libraries("${PNAME_LOWER}"
 # Configure Targets Properties
 #-------------------------------------------------------------------------------
 
-list(APPEND PROJECT_TARGETS
-  "util" "common" "model" "console_view" "presenter" "${PNAME_LOWER}"
-)
-
+list(APPEND PROJECT_TARGETS "util" "common" "model" "console_view" "${PNAME_LOWER}")
 configure_compile_definitions(TARGETS ${PROJECT_TARGETS})
 configure_compile_options(TARGETS ${PROJECT_TARGETS})
 configure_link_options(TARGETS ${PROJECT_TARGETS})

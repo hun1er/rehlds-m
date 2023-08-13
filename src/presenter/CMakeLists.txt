@@ -17,17 +17,17 @@ set(PNAME_CAPITALIZED "Presenter")
 # Library Definition
 #-------------------------------------------------------------------------------
 
-add_library("${PNAME_LOWER}")
+add_library("${PNAME_LOWER}" INTERFACE)
 add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
 
 target_sources("${PNAME_LOWER}"
-  PUBLIC
+  INTERFACE
     "input_presenter.hpp"
     "output_presenter.hpp"
 )
 
 target_include_directories("${PNAME_LOWER}"
-  PUBLIC
+  INTERFACE
     "${CMAKE_SOURCE_DIR}/src"
 )
 
@@ -36,7 +36,7 @@ target_include_directories("${PNAME_LOWER}"
 #-------------------------------------------------------------------------------
 
 target_link_libraries("${PNAME_LOWER}"
-  PUBLIC
+  INTERFACE
     "Abstract::abstract"
     "Model::model"
 )

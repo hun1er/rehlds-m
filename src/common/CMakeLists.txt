@@ -21,7 +21,7 @@ add_library("${PNAME_LOWER}")
 add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
 
 target_sources("${PNAME_LOWER}"
-  PUBLIC
+  PRIVATE
     "engine/engine_wrapper.hpp"
     "engine/interface/dedicated_serverapi_interface.hpp"
     "engine/interface/system_interface.hpp"
