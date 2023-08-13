@@ -47,8 +47,6 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
 add_compile_options(
   -m32                # Generate code for 32-bit environment
-  -march=x86-64-v2    # Generate instructions for a specified machine type
-  -mtune=generic      # Tune to the specified cpu-type everything applicable about the generated code
   -mmmx               # Enable MMX extended instruction set
   -msse               # Enable SSE extended instruction set
   -msse2              # Enable SSE2 extended instruction set
@@ -61,6 +59,12 @@ add_compile_options(
   -pipe               # Use pipes rather than intermediate files
   -fdata-sections     # Place each data in its own section
   -ffunction-sections # Place each function in its own section
+
+  # Generate instructions for a specified machine type
+  $<IF:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>,-march=native,-march=x86-64-v2>
+
+  # Tune to the specified cpu-type everything applicable about the generated code
+  $<$<NOT:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>>:-mtune=generic>
 
   # AddressSanitizer
   $<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>
@@ -99,11 +103,15 @@ endfunction()
 
 add_link_options(
   -m32                # Generate code for 32-bit environment
-  -march=x86-64-v2    # Generate instructions for a specified machine type
-  -mtune=generic      # Tune to the specified cpu-type everything applicable about the generated code
   -Wl,--as-needed     # Only link libraries as needed
   -Wl,--gc-sections   # Perform garbage collection of unused input sections
   -Wl,--no-undefined  # Do not allow undefined symbols
+
+  # Generate instructions for a specified machine type
+  $<IF:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>,-march=native,-march=x86-64-v2>
+
+  # Tune to the specified cpu-type everything applicable about the generated code
+  $<$<NOT:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>>:-mtune=generic>
 
   # Warn about common symbols when AddressSanitizer is not enabled
   $<$<NOT:$<BOOL:${ENABLE_ASAN}>>:-Wl,--warn-common>
