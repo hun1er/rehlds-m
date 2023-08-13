@@ -3,7 +3,6 @@
 #-------------------------------------------------------------------------------
 
 add_compile_options(
-  -march=x86-64-v2      # Generate instructions for a specified machine type
   -mmmx                 # Enable MMX extended instruction set
   -msse                 # Enable SSE extended instruction set
   -msse2                # Enable SSE2 extended instruction set
@@ -13,6 +12,9 @@ add_compile_options(
   -msse4.2              # Enable SSE4.2 extended instruction set
   -fcf-protection=none  # Instrument control-flow architecture protection
   /Qvec                 # Loop vectorization passes
+
+  # Generate instructions for a specified machine type
+  $<IF:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>,-march=native,-march=x86-64-v2>
 )
 
 # Adds additional compile options for a list of targets.
