@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.21...3.27)
 
 project("ReHLDS-M"
   VERSION
-    "1.3.0"
+    "1.3.1"
 
   DESCRIPTION
     "Reverse-engineered HLDS"
