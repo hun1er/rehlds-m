@@ -1,14 +1,17 @@
 name: Release Drafter
 
 on:
+  # Triggers on push events to the specified branches
   push:
-    branches: ["main"]
+    branches: [main]
 
+  # Required for autolabeler
   pull_request:
-    types: ["opened", "reopened", "synchronize"]
+    types: [opened, reopened, synchronize]
 
+  # Required for autolabeler to support PRs from forks
   pull_request_target:
-    types: ["opened", "reopened", "synchronize"]
+    types: [opened, reopened, synchronize]
 
 permissions:
   contents: read
@@ -19,10 +22,10 @@ jobs:
       contents: write
       pull-requests: write
 
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: release-drafter/release-drafter@v5
+      - uses: release-drafter/release-drafter@v6
         with:
           config-name: "release-drafter.yml"
           publish: false

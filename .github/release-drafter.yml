@@ -9,111 +9,120 @@ template: |
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
 autolabeler:
-  - label: 'breaking'
-    body:
-      - '/BREAKING CHANGE: .+/i'
+  - label: 'BREAKING CHANGE'
     title:
       - '/!:/'
+    body:
+      - '/BREAKING CHANGE:/i'
 
   - label: 'bug'
     branch:
-      - '/fix\/.+/'
+      - '/^fix\//'
     title:
-      - '/fix: .+/'
+      - '/^fix(\(.*\))?:/'
 
   - label: 'build'
+    branch:
+      - '/^build\//'
+    title:
+      - '/^build:/'
     files:
       - '*.cmake'
+      - '*.rc.in'
       - '**/cmake/**'
       - 'CMakeLists.txt'
       - 'CMakePresets.json'
-    branch:
-      - '/build\/.+/'
-    title:
-      - '/build: .+/'
 
   - label: 'chore'
+    branch:
+      - '/^chore\//'
+    title:
+      - '/^chore(\(.*\))?:/'
     files:
       - '.clang-tidy'
       - '.cppcheck_suppressions'
       - '.gitattributes'
       - '.gitignore'
-      - '*.rc.in'
-      - 'LICENSE'
-    branch:
-      - '/chore\/.+/'
-    title:
-      - '/chore: .+/'
+      - '.pvs-studio'
 
   - label: 'ci'
+    branch:
+      - '/^ci\//'
+    title:
+      - '/^ci:/'
     files:
       - '.github/**'
-    branch:
-      - '/ci\/.+/'
-    title:
-      - '/ci: .+/'
 
   - label: 'documentation'
+    branch:
+      - '/^docs\//'
+    title:
+      - '/^docs:/'
     files:
       - '*.md'
       - '*.rst'
+      - 'doc/**'
       - 'docs/**'
-    branch:
-      - '/docs\/.+/'
-    title:
-      - '/docs: .+/'
+      - 'LICENSE'
 
   - label: 'enhancement'
     branch:
-      - '/feat\/.+/'
+      - '/^feat\//'
     title:
-      - '/feat: .+/'
+      - '/^feat(\(.*\))?:/'
 
   - label: 'improvement'
     branch:
-      - '/improvement\/.+/'
+      - '/^improve\//'
     title:
-      - '/improvement: .+/'
+      - '/^improve(\(.*\))?:/'
 
   - label: 'performance'
     branch:
-      - '/perf\/.+/'
+      - '/^perf\//'
     title:
-      - '/perf: .+/'
+      - '/^perf(\(.*\))?:/'
 
   - label: 'refactoring'
     branch:
-      - '/refactor\/.+/'
+      - '/^refactor\//'
     title:
-      - '/refactor: .+/'
+      - '/^refactor(\(.*\))?:/'
 
   - label: 'revert'
     branch:
-      - '/revert\/.+/'
+      - '/^revert\//'
     title:
-      - '/revert: .+/'
+      - '/^revert:/'
+
+  - label: 'security'
+    branch:
+      - '/^security\//'
+    title:
+      - '/^security(\(.*\))?:/'
 
   - label: 'style'
+    branch:
+      - '/^style\//'
+    title:
+      - '/^style(\(.*\))?:/'
     files:
       - '.clang-format'
       - '.editorconfig'
-    branch:
-      - '/style\/.+/'
-    title:
-      - '/style: .+/'
 
   - label: 'tests'
+    branch:
+      - '/^test\//'
+    title:
+      - '/^test(\(.*\))?:/'
     files:
       - '**/test/**'
-    branch:
-      - '/test\/.+/'
-    title:
-      - '/test: .+/'
+      - '**/tests/**'
 
 categories:
   - title: ':warning: Breaking changes'
     labels:
-      - 'breaking'
+      - 'BREAKING CHANGE'
 
   - title: ':rocket: Features'
     labels:
@@ -125,13 +134,17 @@ categories:
       - 'performance'
       - 'refactoring'
 
+  - title: ':shield: Security'
+    labels:
+      - 'security'
+
   - title: ':bug: Bug Fixes'
     labels:
       - 'bug'
 
-  # - title: ':books: Documentation'
-  #   labels:
-  #     - 'documentation'
+  - title: ':books: Documentation'
+    labels:
+      - 'documentation'
 
   - title: ':white_check_mark: Tests'
     labels:
@@ -142,24 +155,23 @@ categories:
       - 'build'
       - 'chore'
       - 'ci'
-      - 'revert'
-      - 'style'
 
 version-resolver:
   major:
     labels:
-      - 'breaking'
+      - 'BREAKING CHANGE'
 
   minor:
     labels:
       - 'enhancement'
+      - 'improvement'
 
   patch:
     labels:
       - 'bug'
-      - 'improvement'
       - 'performance'
       - 'refactoring'
+      - 'security'
 
 exclude-labels:
   - 'skip-changelog'
