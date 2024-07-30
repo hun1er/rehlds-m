@@ -1,32 +1,28 @@
-cmake_minimum_required(VERSION 3.21...3.27)
-
 #-------------------------------------------------------------------------------
-# Project Definition
+# Variable definitions
 #-------------------------------------------------------------------------------
 
-project("HLDS"
-  DESCRIPTION
-    "HLDS Launcher"
-)
+set(PROJECT_NAME_LOW "hlds")
+set(PROJECT_NAME_CAP "HLDS")
 
 #-------------------------------------------------------------------------------
-# Variable Definitions
+# Project definition
 #-------------------------------------------------------------------------------
 
-set(PNAME_LOWER "hlds")
+project("${PROJECT_NAME_CAP}")
 
 #-------------------------------------------------------------------------------
-# Executable Definition
+# Executable definition
 #-------------------------------------------------------------------------------
 
-add_executable("${PNAME_LOWER}")
-target_sources("${PNAME_LOWER}"
+add_executable("${PROJECT_NAME_LOW}")
+target_sources("${PROJECT_NAME_LOW}"
   PRIVATE
     "exports.cpp"
     "main.cpp"
 )
 
-set_target_properties("${PNAME_LOWER}"
+set_target_properties("${PROJECT_NAME_LOW}"
   PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${BIN_OUTPUT_DIR}"
     POSITION_INDEPENDENT_CODE OFF
@@ -36,19 +32,19 @@ if(WIN32)
   configure_file("hlds.exe.manifest.in" "${CMAKE_SOURCE_DIR}/hlds.exe.manifest" @ONLY)
   configure_file("hlds.exe.rc.in" "${CMAKE_SOURCE_DIR}/hlds.exe.rc" @ONLY)
 
-  target_sources("${PNAME_LOWER}"
+  target_sources("${PROJECT_NAME_LOW}"
     PRIVATE
       "${CMAKE_SOURCE_DIR}/hlds.exe.manifest"
       "${CMAKE_SOURCE_DIR}/hlds.exe.rc"
   )
 
-  target_link_options("${PNAME_LOWER}"
+  target_link_options("${PROJECT_NAME_LOW}"
     PRIVATE
       "/MANIFESTUAC:level='asInvoker' uiAccess='false'"
       /MANIFEST
   )
 elseif(UNIX AND NOT APPLE)
-  set_target_properties("${PNAME_LOWER}" PROPERTIES
+  set_target_properties("${PROJECT_NAME_LOW}" PROPERTIES
     SUFFIX "_linux"
   )
 
@@ -57,9 +53,9 @@ elseif(UNIX AND NOT APPLE)
        (lib STREQUAL "libstdc++.so" AND NOT LINK_STATIC_STDCPP) OR
        (lib MATCHES "libsvml.so|libintlc.so" AND NOT NO_INTEL_LIB AND NOT LINK_STATIC_INTEL))
       add_custom_command(
-        TARGET "${PNAME_LOWER}" POST_BUILD
-        WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PNAME_LOWER}>"
-        COMMAND sh -c "cp \$(ldd ${PNAME_LOWER}_linux | grep '${lib}' | grep -E -o '/.+\\s') . > /dev/null 2>&1 || (exit 0)"
+        TARGET "${PROJECT_NAME_LOW}" POST_BUILD
+        WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME_LOW}>"
+        COMMAND sh -c "cp \$(ldd ${PROJECT_NAME_LOW}_linux | grep '${lib}' | grep -E -o '/.+\\s') . > /dev/null 2>&1 || (exit 0)"
         VERBATIM
       )
     endif()
@@ -67,37 +63,37 @@ elseif(UNIX AND NOT APPLE)
 endif()
 
 #-------------------------------------------------------------------------------
-# Link Libraries
+# Link libraries
 #-------------------------------------------------------------------------------
 
-target_link_libraries("${PNAME_LOWER}"
+target_link_libraries("${PROJECT_NAME_LOW}"
   PRIVATE
-    "Abstract::abstract"
-    "Common::common"
-    "Model::model"
-    "View::console"
-    "Presenter::presenter"
-    "Util::util"
+    "${LIB_ABSTRACT}"
+    "${LIB_COMMON}"
+    "${LIB_MODEL}"
+    "${LIB_VIEW_CONSOLE}"
+    "${LIB_PRESENTER}"
+    "${LIB_UTIL}"
 
     $<$<PLATFORM_ID:Windows>:
-      WS2_32.Lib
+      "${LIB_WINSOCK}"
     >
 
     $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:
-      "c"
+      "${LIB_C}"
     >
 )
 
 #-------------------------------------------------------------------------------
-# Configure Targets Properties
+# Configure targets properties
 #-------------------------------------------------------------------------------
 
-list(APPEND PROJECT_TARGETS "util" "common" "model" "console_view" "${PNAME_LOWER}")
+list(APPEND PROJECT_TARGETS "util" "common" "model" "console_view" "${PROJECT_NAME_LOW}")
 configure_compile_definitions(TARGETS ${PROJECT_TARGETS})
 configure_compile_options(TARGETS ${PROJECT_TARGETS})
 configure_link_options(TARGETS ${PROJECT_TARGETS})
 
-target_compile_definitions("${PNAME_LOWER}"
+target_compile_definitions("${PROJECT_NAME_LOW}"
   PRIVATE
     $<$<PLATFORM_ID:Windows>:
       _CONSOLE

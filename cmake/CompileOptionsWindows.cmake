@@ -141,7 +141,10 @@ function(configure_compile_options)
         $<IF:$<CONFIG:Debug>,/GS,/GS->
 
         # Additional security checks
-        $<IF:$<CONFIG:Debug>,/sdl,/sdl->
+        #
+        # Note: In recent versions of the MSVC compiler, the STL is compiled with warnings C4996.
+        # The /sdl flag elevates these warnings to errors. This flag should be enabled in the future.
+        #$<IF:$<CONFIG:Debug>,/sdl,/sdl->
     )
   endforeach()
 endfunction()
@@ -153,7 +156,7 @@ endfunction()
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/INCREMENTAL")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/INCREMENTAL:NO")
 set(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL "/INCREMENTAL:NO")
-set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "/INCREMENTAL")
+set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "/INCREMENTAL:NO")
 
 set(CMAKE_MODULE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
 set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
@@ -173,7 +176,6 @@ add_link_options(
 
   # Generate debug info
   $<$<CONFIG:Debug>:/DEBUG:FULL>
-  $<$<CONFIG:RelWithDebInfo>:/DEBUG:FASTLINK>
   $<$<OR:$<CONFIG:MinSizeRel>,$<CONFIG:Release>>:/DEBUG:NONE>
 
   # Link-time code generation
@@ -184,6 +186,9 @@ add_link_options(
 
   # Ignore warning LNK4300 when AddressSanitizer is enabled
   $<$<BOOL:${ENABLE_ASAN}>:/IGNORE:4300>
+
+  # Detailed output of the linking process
+  $<$<BOOL:${ENABLE_LINK_TRACE}>:/VERBOSE:LIB>
 )
 
 # Static libraries linked by default

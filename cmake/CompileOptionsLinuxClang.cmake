@@ -45,6 +45,7 @@ function(configure_compile_options)
         -Wundef
         -Wunused
         -Wwrite-strings
+        #-Wno-sign-conversion
 
         # C++ diagnostic flags
         $<$<COMPILE_LANGUAGE:CXX>:
@@ -56,6 +57,7 @@ function(configure_compile_options)
           -Woverloaded-virtual
           -Wsign-promo
           -Wzero-as-null-pointer-constant
+          #-Wno-non-virtual-dtor
         >
     )
   endforeach()

@@ -1,26 +1,24 @@
-cmake_minimum_required(VERSION 3.21...3.27)
-
 #-------------------------------------------------------------------------------
-# Project Definition
+# Variable definitions
 #-------------------------------------------------------------------------------
 
-project("Common")
+set(PROJECT_NAME_CAP "Common")
+set(PROJECT_NAME_LOW "common")
 
 #-------------------------------------------------------------------------------
-# Variable Definitions
+# Project definition
 #-------------------------------------------------------------------------------
 
-set(PNAME_LOWER "common")
-set(PNAME_CAPITALIZED "Common")
+project("${PROJECT_NAME_CAP}")
 
 #-------------------------------------------------------------------------------
-# Library Definition
+# Library definition
 #-------------------------------------------------------------------------------
 
-add_library("${PNAME_LOWER}")
-add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
+add_library("${PROJECT_NAME_LOW}")
+add_library("${PROJECT_NAME_CAP}::${PROJECT_NAME_LOW}" ALIAS "${PROJECT_NAME_LOW}")
 
-target_sources("${PNAME_LOWER}"
+target_sources("${PROJECT_NAME_LOW}"
   PRIVATE
     "engine/engine_wrapper.hpp"
     "engine/interface/dedicated_serverapi_interface.hpp"
@@ -40,7 +38,7 @@ target_sources("${PNAME_LOWER}"
     "platform.hpp"
 )
 
-target_include_directories("${PNAME_LOWER}"
+target_include_directories("${PROJECT_NAME_LOW}"
   PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
 )
@@ -49,11 +47,11 @@ target_include_directories("${PNAME_LOWER}"
 # Link Libraries
 #-------------------------------------------------------------------------------
 
-target_link_libraries("${PNAME_LOWER}"
+target_link_libraries("${PROJECT_NAME_LOW}"
   PUBLIC
-    "Util::util"
+    "${LIB_UTIL}"
 
     $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:
-      "c"
+      "${LIB_C}"
     >
 )

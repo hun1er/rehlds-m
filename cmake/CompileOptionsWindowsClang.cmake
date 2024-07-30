@@ -61,7 +61,6 @@ function(configure_compile_options)
           -Wctor-dtor-privacy
           -Weffc++
           -Wextra-semi
-          -Wnon-virtual-dtor
           -Wold-style-cast
           -Woverloaded-virtual
           -Wsign-promo
@@ -70,6 +69,7 @@ function(configure_compile_options)
 
         # Warning suppression
         -Wno-sign-conversion
+        -Wno-non-virtual-dtor
 
         # Buffer security check
         $<IF:$<CONFIG:Debug>,/GS,/GS->
@@ -79,3 +79,12 @@ function(configure_compile_options)
     )
   endforeach()
 endfunction()
+
+#-------------------------------------------------------------------------------
+# Link Options
+#-------------------------------------------------------------------------------
+
+add_link_options(
+  # Generate debug info
+  $<$<CONFIG:RelWithDebInfo>:/DEBUG:FULL>
+)

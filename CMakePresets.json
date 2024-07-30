@@ -16,6 +16,12 @@
         "uninitialized": false,
         "unusedCli": false
       },
+      "hidden": true
+    },
+    {
+      "name": "ninja",
+      "description": "Use Ninja generator",
+      "generator": "Ninja",
       "architecture": {
         "value": "x86",
         "strategy": "external"
@@ -23,16 +29,59 @@
       "hidden": true
     },
     {
+      "name": "ninja-multi-config",
+      "description": "Use Ninja Multi-Config generator",
+      "generator": "Ninja Multi-Config",
+      "architecture": {
+        "value": "x86",
+        "strategy": "external"
+      },
+      "hidden": true
+    },
+    {
+      "name": "debug",
+      "description": "Debug build configuration",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "hidden": true
+    },
+    {
+      "name": "release",
+      "description": "Release build configuration",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "hidden": true
+    },
+    {
+      "name": "minsizerel",
+      "description": "Minimal size release build configuration",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "MinSizeRel"
+      },
+      "hidden": true
+    },
+    {
+      "name": "reldebinfo",
+      "description": "Release with debug information build configuration",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      },
+      "hidden": true
+    },
+    {
       "name": "windows",
-      "description": "Building on Windows systems",
-      "generator": "Ninja",
+      "description": "Configuration for Windows",
       "cacheVariables": {
         "CMAKE_C_SIMULATE_ID": "MSVC",
         "CMAKE_CXX_SIMULATE_ID": "MSVC"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [ "Windows" ]
+          "hostOS": [
+            "Windows"
+          ]
         }
       },
       "condition": {
@@ -43,64 +92,8 @@
       "hidden": true
     },
     {
-      "name": "linux",
-      "description": "Building on Linux systems",
-      "generator": "Unix Makefiles",
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "hostOS": [ "Linux" ]
-        },
-        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
-          "copySources": true,
-          "copyBuildOutput": true,
-          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}",
-          "copySourcesOptions": {
-            "exclusionList": [ ".git", ".vs", "bin", "build", "out" ]
-          }
-        }
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      },
-      "hidden": true
-    },
-    {
-      "name": "debug",
-      "description": "Building with debug information",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      },
-      "hidden": true
-    },
-    {
-      "name": "release",
-      "description": "Building with optimizations for release",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      },
-      "hidden": true
-    },
-    {
-      "name": "minsizerel",
-      "description": "Building with optimizations for minimum size",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "MinSizeRel"
-      },
-      "hidden": true
-    },
-    {
-      "name": "relwithdebinfo",
-      "description": "Building with optimizations and debug information",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      },
-      "hidden": true
-    },
-    {
       "name": "msvc",
-      "description": "Building with the Microsoft Visual C++ compiler",
+      "description": "Use MSVC compiler",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"
@@ -115,7 +108,7 @@
     },
     {
       "name": "clang-cl",
-      "description": "Building with the Clang-CL compiler",
+      "description": "Use Clang-CL compiler",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
@@ -124,15 +117,132 @@
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "inheritEnvironments": [ "msvc_x86_x64", "clang_cl_x86" ],
+          "inheritEnvironments": [
+            "msvc_x86_x64",
+            "clang_cl_x86"
+          ],
           "intelliSenseMode": "windows-clang-x86"
         }
       },
       "hidden": true
     },
     {
+      "name": "ninja-msvc-windows",
+      "inherits": [
+        "base",
+        "ninja-multi-config",
+        "msvc",
+        "windows"
+      ]
+    },
+    {
+      "name": "ninja-clang-cl-windows",
+      "inherits": [
+        "base",
+        "ninja-multi-config",
+        "clang-cl",
+        "windows"
+      ]
+    },
+    {
+      "name": "iwyu-ninja-windows",
+      "inherits": [
+        "base",
+        "ninja",
+        "clang-cl",
+        "windows",
+        "reldebinfo"
+      ],
+      "cacheVariables": {
+        "ENABLE_IWYU": "ON"
+      }
+    },
+    {
+      "name": "clang-tidy-ninja-windows",
+      "inherits": [
+        "base",
+        "ninja",
+        "clang-cl",
+        "windows",
+        "debug"
+      ],
+      "cacheVariables": {
+        "ENABLE_CLANG_TIDY": "ON"
+      }
+    },
+    {
+      "name": "cppcheck-ninja-msvc-windows",
+      "inherits": [
+        "base",
+        "ninja",
+        "msvc",
+        "windows",
+        "debug"
+      ],
+      "cacheVariables": {
+        "ENABLE_CPPCHECK": "ON"
+      }
+    },
+    {
+      "name": "pvs-studio-ninja-msvc-windows",
+      "inherits": [
+        "base",
+        "ninja",
+        "msvc",
+        "windows",
+        "debug"
+      ],
+      "cacheVariables": {
+        "ENABLE_PVS_STUDIO": "ON"
+      }
+    },
+    {
+      "name": "unittest-ninja-msvc-windows",
+      "inherits": [
+        "base",
+        "ninja",
+        "msvc",
+        "windows",
+        "release"
+      ],
+      "cacheVariables": {
+        "BUILD_UNIT_TESTS": "ON"
+      }
+    },
+    {
+      "name": "linux",
+      "description": "Configuration for Linux",
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "Linux"
+          ]
+        },
+        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+          "copySources": true,
+          "copyBuildOutput": true,
+          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}",
+          "copySourcesOptions": {
+            "exclusionList": [
+              ".git",
+              ".vs",
+              "bin",
+              "build",
+              "out"
+            ]
+          }
+        }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "hidden": true
+    },
+    {
       "name": "gcc",
-      "description": "Building with the GNU Compiler Collection",
+      "description": "Use GCC compiler",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++"
@@ -147,7 +257,7 @@
     },
     {
       "name": "clang",
-      "description": "Building with the Clang compiler",
+      "description": "Use Clang compiler",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
@@ -156,7 +266,7 @@
     },
     {
       "name": "intel-llvm",
-      "description": "Building with the Intel LLVM compiler",
+      "description": "Use Intel LLVM compiler",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "icx",
         "CMAKE_CXX_COMPILER": "icpx"
@@ -164,126 +274,96 @@
       "hidden": true
     },
     {
-      "name": "windows-debug",
-      "inherits": [ "base", "windows", "debug" ]
+      "name": "ninja-gcc-linux",
+      "inherits": [
+        "base",
+        "ninja-multi-config",
+        "gcc",
+        "linux"
+      ]
     },
     {
-      "name": "windows-release",
-      "inherits": [ "base", "windows", "release" ]
+      "name": "ninja-clang-linux",
+      "inherits": [
+        "base",
+        "ninja-multi-config",
+        "clang",
+        "linux"
+      ]
     },
     {
-      "name": "windows-minsizerel",
-      "inherits": [ "base", "windows", "minsizerel" ]
+      "name": "ninja-intel-linux",
+      "inherits": [
+        "base",
+        "ninja-multi-config",
+        "intel-llvm",
+        "linux"
+      ]
     },
     {
-      "name": "windows-relwithdebinfo",
-      "inherits": [ "base", "windows", "relwithdebinfo" ]
-    },
-    {
-      "name": "windows-unit-tests",
-      "description": "Build with optimizations for release and unit tests enabled",
-      "inherits": [ "base", "windows", "release" ],
-      "cacheVariables": {
-        "BUILD_UNIT_TESTS": "ON"
-      }
-    },
-    {
-      "name": "windows-cppcheck",
-      "description": "Build with the MSVC compiler and Cppcheck static analysis enabled",
-      "inherits": [ "base", "windows", "msvc", "debug" ],
-      "cacheVariables": {
-        "ENABLE_CPPCHECK": "ON"
-      }
-    },
-    {
-      "name": "windows-pvs-studio",
-      "description": "Build with the MSVC compiler and PVS-Studio static analysis enabled",
-      "inherits": [ "base", "windows", "msvc", "debug" ],
-      "cacheVariables": {
-        "ENABLE_PVS_STUDIO": "ON"
-      }
-    },
-    {
-      "name": "windows-clang-tidy",
-      "description": "Build with the Clang-CL compiler and Clang-Tidy static analysis enabled",
-      "inherits": [ "base", "windows", "clang-cl", "debug" ],
-      "cacheVariables": {
-        "ENABLE_CLANG_TIDY": "ON"
-      }
-    },
-    {
-      "name": "windows-iwyu",
-      "description": "Build with the Clang-CL compiler and Include What You Use static analysis enabled",
-      "inherits": [ "base", "windows", "clang-cl", "relwithdebinfo" ],
+      "name": "iwyu-ninja-linux",
+      "inherits": [
+        "base",
+        "ninja",
+        "clang",
+        "linux",
+        "reldebinfo"
+      ],
       "cacheVariables": {
         "ENABLE_IWYU": "ON"
       }
     },
     {
-      "name": "windows-release-clang",
-      "description": "Build with the Clang-CL compiler optimized for release",
-      "inherits": [ "base", "windows", "clang-cl", "release" ]
-    },
-    {
-      "name": "linux-debug",
-      "inherits": [ "base", "linux", "debug" ]
-    },
-    {
-      "name": "linux-release",
-      "inherits": [ "base", "linux", "release" ]
-    },
-    {
-      "name": "linux-minsizerel",
-      "inherits": [ "base", "linux", "minsizerel" ]
-    },
-    {
-      "name": "linux-relwithdebinfo",
-      "inherits": [ "base", "linux", "relwithdebinfo" ]
-    },
-    {
-      "name": "linux-unit-tests",
-      "description": "Build with optimizations for release and unit tests enabled",
-      "inherits": [ "base", "linux", "release" ],
-      "cacheVariables": {
-        "BUILD_UNIT_TESTS": "ON"
-      }
-    },
-    {
-      "name": "linux-cppcheck",
-      "description": "Build with the GCC compiler and Cppcheck static analysis enabled",
-      "inherits": [ "base", "linux", "gcc", "debug" ],
-      "cacheVariables": {
-        "ENABLE_CPPCHECK": "ON"
-      }
-    },
-    {
-      "name": "linux-pvs-studio",
-      "description": "Build with the GCC compiler and PVS-Studio static analysis enabled",
-      "inherits": [ "base", "linux", "gcc", "debug" ],
-      "cacheVariables": {
-        "ENABLE_PVS_STUDIO": "ON"
-      }
-    },
-    {
-      "name": "linux-clang-tidy",
-      "description": "Build with the Clang compiler and Clang-Tidy static analysis enabled",
-      "inherits": [ "base", "linux", "clang", "debug" ],
+      "name": "clang-tidy-ninja-linux",
+      "inherits": [
+        "base",
+        "ninja",
+        "clang",
+        "linux",
+        "debug"
+      ],
       "cacheVariables": {
         "ENABLE_CLANG_TIDY": "ON"
       }
     },
     {
-      "name": "linux-iwyu",
-      "description": "Build with the Clang compiler and Include What You Use static analysis enabled",
-      "inherits": [ "base", "linux", "clang", "relwithdebinfo" ],
+      "name": "cppcheck-ninja-gcc-linux",
+      "inherits": [
+        "base",
+        "ninja",
+        "gcc",
+        "linux",
+        "debug"
+      ],
       "cacheVariables": {
-        "ENABLE_IWYU": "ON"
+        "ENABLE_CPPCHECK": "ON"
       }
     },
     {
-      "name": "linux-release-intel",
-      "description": "Build with the Intel LLVM compiler optimized for release",
-      "inherits": [ "base", "linux", "intel-llvm", "release" ]
+      "name": "pvs-studio-ninja-gcc-linux",
+      "inherits": [
+        "base",
+        "ninja",
+        "gcc",
+        "linux",
+        "debug"
+      ],
+      "cacheVariables": {
+        "ENABLE_PVS_STUDIO": "ON"
+      }
+    },
+    {
+      "name": "unittest-ninja-gcc-linux",
+      "inherits": [
+        "base",
+        "ninja",
+        "gcc",
+        "linux",
+        "release"
+      ],
+      "cacheVariables": {
+        "BUILD_UNIT_TESTS": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -295,7 +375,7 @@
     },
     {
       "name": "windows",
-      "description": "Building on Windows systems",
+      "description": "Configuration for Windows",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -305,7 +385,7 @@
     },
     {
       "name": "linux",
-      "description": "Building on Linux systems",
+      "description": "Configuration for Linux",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -314,165 +394,275 @@
       "hidden": true
     },
     {
-      "name": "windows-debug",
-      "displayName": "Debug",
-      "configurePreset": "windows-debug",
+      "name": "ninja-msvc-windows-debug",
+      "displayName": "Ninja MSVC Debug",
+      "description": "Build using Ninja Multi-Config generator and MSVC compiler with Debug configuration",
+      "configurePreset": "ninja-msvc-windows",
       "configuration": "Debug",
-      "inherits": [ "base", "windows" ]
+      "inherits": [
+        "base",
+        "windows"
+      ]
     },
     {
-      "name": "windows-release",
-      "displayName": "Release",
-      "configurePreset": "windows-release",
+      "name": "ninja-msvc-windows-release",
+      "displayName": "Ninja MSVC Release",
+      "description": "Build using Ninja Multi-Config generator and MSVC compiler with Release configuration",
+      "configurePreset": "ninja-msvc-windows",
       "configuration": "Release",
-      "inherits": [ "base", "windows" ]
+      "inherits": [
+        "base",
+        "windows"
+      ]
     },
     {
-      "name": "windows-minsizerel",
-      "displayName": "Minimum Size Release",
-      "configurePreset": "windows-minsizerel",
-      "configuration": "MinSizeRel",
-      "inherits": [ "base", "windows" ]
-    },
-    {
-      "name": "windows-relwithdebinfo",
-      "displayName": "Release With Debug Info",
-      "configurePreset": "windows-relwithdebinfo",
+      "name": "ninja-msvc-windows-reldebinfo",
+      "displayName": "Ninja MSVC RelWithDebInfo",
+      "description": "Build using Ninja Multi-Config generator and MSVC compiler with RelWithDebInfo configuration",
+      "configurePreset": "ninja-msvc-windows",
       "configuration": "RelWithDebInfo",
-      "inherits": [ "base", "windows" ]
+      "inherits": [
+        "base",
+        "windows"
+      ]
     },
     {
-      "name": "windows-unit-tests",
-      "displayName": "Unit Tests",
-      "description": "Build with optimizations for release and unit tests enabled",
-      "configurePreset": "windows-unit-tests",
+      "name": "ninja-clang-cl-windows-debug",
+      "displayName": "Ninja Clang-CL Debug",
+      "description": "Build using Ninja Multi-Config generator and Clang-CL compiler with Debug configuration",
+      "configurePreset": "ninja-clang-cl-windows",
+      "configuration": "Debug",
+      "inherits": [
+        "base",
+        "windows"
+      ]
+    },
+    {
+      "name": "ninja-clang-cl-windows-release",
+      "displayName": "Ninja Clang-CL Release",
+      "description": "Build using Ninja Multi-Config generator and Clang-CL compiler with Release configuration",
+      "configurePreset": "ninja-clang-cl-windows",
       "configuration": "Release",
-      "inherits": [ "base", "windows" ],
-      "targets": [ "hlds", "hlds_tests" ]
+      "inherits": [
+        "base",
+        "windows"
+      ]
     },
     {
-      "name": "windows-cppcheck",
-      "displayName": "Cppcheck",
-      "description": "Build with the MSVC compiler and Cppcheck static analysis enabled",
-      "configurePreset": "windows-cppcheck",
-      "configuration": "Debug",
-      "inherits": [ "base", "windows" ]
-    },
-    {
-      "name": "windows-pvs-studio",
-      "displayName": "PVS-Studio",
-      "description": "Build with the MSVC compiler and PVS-Studio static analysis enabled",
-      "configurePreset": "windows-pvs-studio",
-      "configuration": "Debug",
-      "inherits": [ "base", "windows" ]
-    },
-    {
-      "name": "windows-clang-tidy",
-      "displayName": "Clang-Tidy",
-      "description": "Build with the Clang-CL compiler and Clang-Tidy static analysis enabled",
-      "configurePreset": "windows-clang-tidy",
-      "configuration": "Debug",
-      "inherits": [ "base", "windows" ]
-    },
-    {
-      "name": "windows-iwyu",
-      "displayName": "Include What You Use",
-      "description": "Build with the Clang-CL compiler and Include What You Use static analysis enabled",
-      "configurePreset": "windows-iwyu",
+      "name": "ninja-clang-cl-windows-reldebinfo",
+      "displayName": "Ninja Clang-CL RelWithDebInfo",
+      "description": "Build using Ninja Multi-Config generator and Clang-CL compiler with RelWithDebInfo configuration",
+      "configurePreset": "ninja-clang-cl-windows",
       "configuration": "RelWithDebInfo",
-      "inherits": [ "base", "windows" ]
+      "inherits": [
+        "base",
+        "windows"
+      ]
     },
     {
-      "name": "windows-release-clang",
-      "displayName": "Release Clang-CL",
-      "configurePreset": "windows-release-clang",
-      "configuration": "Release",
-      "inherits": [ "base", "windows" ]
+      "name": "iwyu-ninja-windows",
+      "displayName": "Ninja Include What You Use",
+      "description": "Run Include What You Use using Ninja generator and Clang-CL compiler",
+      "configurePreset": "iwyu-ninja-windows",
+      "inherits": [
+        "base",
+        "windows"
+      ]
     },
     {
-      "name": "linux-debug",
-      "displayName": "Debug",
-      "configurePreset": "linux-debug",
+      "name": "clang-tidy-ninja-windows",
+      "displayName": "Ninja Clang-Tidy",
+      "description": "Run Clang-Tidy using Ninja generator and Clang-CL compiler",
+      "configurePreset": "clang-tidy-ninja-windows",
+      "inherits": [
+        "base",
+        "windows"
+      ]
+    },
+    {
+      "name": "cppcheck-ninja-msvc-windows",
+      "displayName": "Ninja Cppcheck",
+      "description": "Run Cppcheck using Ninja generator and MSVC compiler",
+      "configurePreset": "cppcheck-ninja-msvc-windows",
+      "inherits": [
+        "base",
+        "windows"
+      ]
+    },
+    {
+      "name": "pvs-studio-ninja-msvc-windows",
+      "displayName": "Ninja PVS-Studio",
+      "description": "Run PVS-Studio using Ninja generator and MSVC compiler",
+      "configurePreset": "pvs-studio-ninja-msvc-windows",
+      "inherits": [
+        "base",
+        "windows"
+      ]
+    },
+    {
+      "name": "unittest-ninja-msvc-windows",
+      "displayName": "Ninja Unit Test",
+      "description": "Build unit tests using Ninja generator and MSVC compiler",
+      "configurePreset": "unittest-ninja-msvc-windows",
+      "inherits": [
+        "base",
+        "windows"
+      ]
+    },
+    {
+      "name": "ninja-gcc-linux-debug",
+      "displayName": "Ninja GCC Debug",
+      "description": "Build using Ninja Multi-Config generator and GCC compiler with Debug configuration",
+      "configurePreset": "ninja-gcc-linux",
       "configuration": "Debug",
-      "inherits": [ "base", "linux" ]
+      "inherits": [
+        "base",
+        "linux"
+      ]
     },
     {
-      "name": "linux-release",
-      "displayName": "Release",
-      "configurePreset": "linux-release",
+      "name": "ninja-gcc-linux-release",
+      "displayName": "Ninja GCC Release",
+      "description": "Build using Ninja Multi-Config generator and GCC compiler with Release configuration",
+      "configurePreset": "ninja-gcc-linux",
       "configuration": "Release",
-      "inherits": [ "base", "linux" ]
+      "inherits": [
+        "base",
+        "linux"
+      ]
     },
     {
-      "name": "linux-minsizerel",
-      "displayName": "Minimum Size Release",
-      "configurePreset": "linux-minsizerel",
-      "configuration": "MinSizeRel",
-      "inherits": [ "base", "linux" ]
-    },
-    {
-      "name": "linux-relwithdebinfo",
-      "displayName": "Release With Debug Info",
-      "configurePreset": "linux-relwithdebinfo",
+      "name": "ninja-gcc-linux-reldebinfo",
+      "displayName": "Ninja GCC RelWithDebInfo",
+      "description": "Build using Ninja Multi-Config generator and GCC compiler with RelWithDebInfo configuration",
+      "configurePreset": "ninja-gcc-linux",
       "configuration": "RelWithDebInfo",
-      "inherits": [ "base", "linux" ]
+      "inherits": [
+        "base",
+        "linux"
+      ]
     },
     {
-      "name": "linux-unit-tests",
-      "displayName": "Unit Tests",
-      "description": "Build with optimizations for release and unit tests enabled",
-      "configurePreset": "linux-unit-tests",
+      "name": "ninja-clang-linux-debug",
+      "displayName": "Ninja Clang Debug",
+      "description": "Build using Ninja Multi-Config generator and Clang compiler with Debug configuration",
+      "configurePreset": "ninja-clang-linux",
+      "configuration": "Debug",
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "ninja-clang-linux-release",
+      "displayName": "Ninja Clang Release",
+      "description": "Build using Ninja Multi-Config generator and Clang compiler with Release configuration",
+      "configurePreset": "ninja-clang-linux",
       "configuration": "Release",
-      "inherits": [ "base", "linux" ],
-      "targets": [ "hlds", "hlds_tests" ]
+      "inherits": [
+        "base",
+        "linux"
+      ]
     },
     {
-      "name": "linux-cppcheck",
-      "displayName": "Cppcheck",
-      "description": "Build with the GCC compiler and Cppcheck static analysis enabled",
-      "configurePreset": "linux-cppcheck",
-      "configuration": "Debug",
-      "inherits": [ "base", "linux" ]
-    },
-    {
-      "name": "linux-pvs-studio",
-      "displayName": "PVS-Studio",
-      "description": "Build with the GCC compiler and PVS-Studio static analysis enabled",
-      "configurePreset": "linux-pvs-studio",
-      "configuration": "Debug",
-      "inherits": [ "base", "linux" ],
-      "targets": [ "pvs_analysis" ]
-    },
-    {
-      "name": "linux-clang-tidy",
-      "displayName": "Clang-Tidy",
-      "description": "Build with the Clang compiler and Clang-Tidy static analysis enabled",
-      "configurePreset": "linux-clang-tidy",
-      "configuration": "Debug",
-      "inherits": [ "base", "linux" ]
-    },
-    {
-      "name": "linux-iwyu",
-      "displayName": "Include What You Use",
-      "description": "Build with the Clang compiler and Include What You Use static analysis enabled",
-      "configurePreset": "linux-iwyu",
+      "name": "ninja-clang-linux-reldebinfo",
+      "displayName": "Ninja Clang RelWithDebInfo",
+      "description": "Build using Ninja Multi-Config generator and Clang compiler with RelWithDebInfo configuration",
+      "configurePreset": "ninja-clang-linux",
       "configuration": "RelWithDebInfo",
-      "inherits": [ "base", "linux" ]
+      "inherits": [
+        "base",
+        "linux"
+      ]
     },
     {
-      "name": "linux-release-intel",
-      "displayName": "Release Intel LLVM",
-      "description": "Build with the Intel LLVM compiler optimized for release",
-      "configurePreset": "linux-release-intel",
+      "name": "ninja-intel-linux-debug",
+      "displayName": "Ninja Intel LLVM Debug",
+      "description": "Build using Ninja Multi-Config generator and Intel LLVM compiler with Debug configuration",
+      "configurePreset": "ninja-intel-linux",
+      "configuration": "Debug",
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "ninja-intel-linux-release",
+      "displayName": "Ninja Intel LLVM Release",
+      "description": "Build using Ninja Multi-Config generator and Intel LLVM compiler with Release configuration",
+      "configurePreset": "ninja-intel-linux",
       "configuration": "Release",
-      "inherits": [ "base", "linux" ]
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "ninja-intel-linux-reldebinfo",
+      "displayName": "Ninja Intel LLVM RelWithDebInfo",
+      "description": "Build using Ninja Multi-Config generator and Intel LLVM compiler with RelWithDebInfo configuration",
+      "configurePreset": "ninja-intel-linux",
+      "configuration": "RelWithDebInfo",
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "iwyu-ninja-linux",
+      "displayName": "Ninja Include What You Use",
+      "description": "Run Include What You Use using Ninja generator and Clang compiler",
+      "configurePreset": "iwyu-ninja-linux",
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "clang-tidy-ninja-linux",
+      "displayName": "Ninja Clang-Tidy",
+      "description": "Run Clang-Tidy using Ninja generator and Clang compiler",
+      "configurePreset": "clang-tidy-ninja-linux",
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "cppcheck-ninja-gcc-linux",
+      "displayName": "Ninja Cppcheck",
+      "description": "Run Cppcheck using Ninja generator and GCC compiler",
+      "configurePreset": "cppcheck-ninja-gcc-linux",
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "pvs-studio-ninja-gcc-linux",
+      "displayName": "Ninja PVS-Studio",
+      "description": "Run PVS-Studio using Ninja generator and GCC compiler",
+      "configurePreset": "pvs-studio-ninja-gcc-linux",
+      "inherits": [
+        "base",
+        "linux"
+      ]
+    },
+    {
+      "name": "unittest-ninja-gcc-linux",
+      "displayName": "Ninja Unit Test",
+      "description": "Build unit tests using Ninja generator and GCC compiler",
+      "configurePreset": "unittest-ninja-gcc-linux",
+      "inherits": [
+        "base",
+        "linux"
+      ]
     }
   ],
   "testPresets": [
     {
       "name": "base",
-      "description": "Base test preset with common settings and options",
-      "configuration": "Release",
+      "description": "Base configuration with common settings and options",
       "output": {
         "verbosity": "default",
         "shortProgress": true,
@@ -486,38 +676,28 @@
       "hidden": true
     },
     {
-      "name": "windows",
-      "description": "Testing on Windows systems",
+      "name": "ninja-msvc-windows",
+      "configurePreset": "unittest-ninja-msvc-windows",
+      "inherits": [
+        "base"
+      ],
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
-      },
-      "hidden": true
+      }
     },
     {
-      "name": "linux",
-      "description": "Testing on Linux systems",
+      "name": "ninja-gcc-linux",
+      "configurePreset": "unittest-ninja-gcc-linux",
+      "inherits": [
+        "base"
+      ],
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Linux"
-      },
-      "hidden": true
-    },
-    {
-      "name": "windows-all",
-      "displayName": "All Tests",
-      "description": "Run all tests",
-      "configurePreset": "windows-unit-tests",
-      "inherits": [ "base", "windows" ]
-    },
-    {
-      "name": "linux-all",
-      "displayName": "All Tests",
-      "description": "Run all tests",
-      "configurePreset": "linux-unit-tests",
-      "inherits": [ "base", "linux" ]
+      }
     }
   ]
 }

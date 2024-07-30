@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 3.21...3.27)
+#-------------------------------------------------------------------------------
+# Variable Definitions
+#-------------------------------------------------------------------------------
+
+set(PROJECT_NAME_CAP "ConsoleView")
+set(PROJECT_NAME_LOW "console_view")
 
 #-------------------------------------------------------------------------------
 # Project Definition
@@ -7,19 +12,13 @@ cmake_minimum_required(VERSION 3.21...3.27)
 project("Console View")
 
 #-------------------------------------------------------------------------------
-# Variable Definitions
-#-------------------------------------------------------------------------------
-
-set(PNAME_LOWER "console_view")
-
-#-------------------------------------------------------------------------------
 # Library Definition
 #-------------------------------------------------------------------------------
 
-add_library("${PNAME_LOWER}")
-add_library("View::console" ALIAS "${PNAME_LOWER}")
+add_library("${PROJECT_NAME_LOW}")
+add_library("View::console" ALIAS "${PROJECT_NAME_LOW}")
 
-target_sources("${PNAME_LOWER}"
+target_sources("${PROJECT_NAME_LOW}"
   PRIVATE
     "console_input.cpp"
     "console_input.hpp"
@@ -27,14 +26,14 @@ target_sources("${PNAME_LOWER}"
 )
 
 if(WIN32) # Windows sources
-  target_sources("${PNAME_LOWER}"
+  target_sources("${PROJECT_NAME_LOW}"
     PRIVATE
       "windows/console_input.cpp"
       "windows/console_view.cpp"
       "windows/console_view.hpp"
   )
 else() # Unix sources
-  target_sources("${PNAME_LOWER}"
+  target_sources("${PROJECT_NAME_LOW}"
     PRIVATE
       "linux/console_input.cpp"
       "linux/console_view.hpp"
@@ -43,7 +42,7 @@ else() # Unix sources
   )
 endif()
 
-target_include_directories("${PNAME_LOWER}"
+target_include_directories("${PROJECT_NAME_LOW}"
   PUBLIC
     "${CMAKE_SOURCE_DIR}/src/view"
 )
@@ -52,10 +51,10 @@ target_include_directories("${PNAME_LOWER}"
 # Link Libraries
 #-------------------------------------------------------------------------------
 
-target_link_libraries("${PNAME_LOWER}"
+target_link_libraries("${PROJECT_NAME_LOW}"
   PUBLIC
-    "Abstract::abstract"
-    "fmt::fmt"
-    "Threads::Threads"
-    "Util::util"
+    "${LIB_ABSTRACT}"
+    "${LIB_FMT}"
+    "${LIB_THREADS}"
+    "${LIB_UTIL}"
 )

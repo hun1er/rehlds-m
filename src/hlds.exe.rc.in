@@ -21,8 +21,8 @@ BEGIN
         BEGIN
             VALUE "CompanyName",        "Valve Corporation"
             VALUE "ProductName",        "@PROJECT_NAME@"
-            VALUE "InternalName",       "@PNAME_LOWER@"
-            VALUE "OriginalFilename",   "@PNAME_LOWER@.exe"
+            VALUE "InternalName",       "@PROJECT_NAME_LOW@"
+            VALUE "OriginalFilename",   "@PROJECT_NAME_LOW@.exe"
             VALUE "FileVersion",        "@CMAKE_PROJECT_VERSION_MAJOR@.@CMAKE_PROJECT_VERSION_MINOR@.@CMAKE_PROJECT_VERSION_PATCH@"
             VALUE "ProductVersion",     "@CMAKE_PROJECT_VERSION_MAJOR@.@CMAKE_PROJECT_VERSION_MINOR@.@CMAKE_PROJECT_VERSION_PATCH@"
             VALUE "FileDescription",    "@PROJECT_DESCRIPTION@"

@@ -1,31 +1,29 @@
-cmake_minimum_required(VERSION 3.21...3.27)
-
 #-------------------------------------------------------------------------------
-# Project Definition
+# Variable definitions
 #-------------------------------------------------------------------------------
 
-project("Abstract")
+set(PROJECT_NAME_CAP "Abstract")
+set(PROJECT_NAME_LOW "abstract")
 
 #-------------------------------------------------------------------------------
-# Variable Definitions
+# Project definition
 #-------------------------------------------------------------------------------
 
-set(PNAME_LOWER "abstract")
-set(PNAME_CAPITALIZED "Abstract")
+project("${PROJECT_NAME_CAP}")
 
 #-------------------------------------------------------------------------------
-# Library Definition
+# Library definition
 #-------------------------------------------------------------------------------
 
-add_library("${PNAME_LOWER}" INTERFACE)
-add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
+add_library("${PROJECT_NAME_LOW}" INTERFACE)
+add_library("${PROJECT_NAME_CAP}::${PROJECT_NAME_LOW}" ALIAS "${PROJECT_NAME_LOW}")
 
-target_sources("${PNAME_LOWER}"
+target_sources("${PROJECT_NAME_LOW}"
   INTERFACE
     "view.hpp"
 )
 
-target_include_directories("${PNAME_LOWER}"
+target_include_directories("${PROJECT_NAME_LOW}"
   INTERFACE
     "${CMAKE_SOURCE_DIR}/src"
 )
