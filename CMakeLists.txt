@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21...3.27)
+cmake_minimum_required(VERSION 3.21...3.28)
 
 #-------------------------------------------------------------------------------
 # Project definition
@@ -9,7 +9,7 @@ project("ReHLDS-M"
     "1.3.1"
 
   DESCRIPTION
-    "Reverse-engineered HLDS"
+    "Reverse-engineered HLDS launcher"
 
   HOMEPAGE_URL
     "https://github.com/hun1er/rehlds-m"
@@ -22,29 +22,45 @@ project("ReHLDS-M"
 # Options
 #-------------------------------------------------------------------------------
 
-option(USE_LINKER_GOLD          "Use the Gold linker instead of the default linker when compiling with GCC."  ON )
-option(USE_LINKER_LLD           "Use the LLD linker instead of the default linker when compiling with Clang." ON )
-option(USE_INTEL_SVML           "Use the Short Vector Math Library (SVML) when compiling with Intel."         ON )
-option(LINK_STATIC_MSVC_RT      "Link MSVC runtime library statically."                                       OFF)
-option(LINK_STATIC_GCC          "Link libgcc library statically."                                             OFF)
-option(LINK_STATIC_STDCPP       "Link libstdc++ library statically."                                          OFF)
-option(LINK_STATIC_INTEL        "Link Intel provided libraries statically."                                   OFF)
-option(NO_INTEL_LIB             "Restrict linking of all Intel specific libraries."                           OFF)
-option(BUILD_UNIT_TESTS         "Build unit tests."                                                           OFF)
-option(CODE_COVERAGE            "Generate a coverage target using LCOV and genhtml."                          OFF)
-option(ENABLE_RTTI              "Enable support for run-time type information (RTTI)."                        OFF)
-option(ENABLE_EXCEPTIONS        "Enable support for exception handling."                                 ${WIN32})
-option(ENABLE_CLANG_TIDY        "Enable static analysis with Clang-Tidy to detect code issues."               OFF)
-option(ENABLE_CPPCHECK          "Enable static analysis with Cppcheck to detect code issues."                 OFF)
-option(ENABLE_PVS_STUDIO        "Enable static analysis with PVS-Studio to detect code issues."               OFF)
-option(ENABLE_IWYU              "Enable Include What You Use tool to optimize header usage."                  OFF)
-option(ENABLE_ASAN              "Enable AddressSanitizer to detect memory errors."                            OFF)
-option(ENABLE_UBSAN             "Enable UndefinedBehaviorSanitizer to detect undefined behavior errors."      OFF)
-option(OPTIMIZE_FOR_CURRENT_CPU "Generate code optimized for the current (native) processor."                 OFF)
+option(USE_LINKER_GOLD          "Use the Gold linker when compiling with GCC"                         ON )
+option(USE_LINKER_LLD           "Use the LLD linker when compiling with Clang"                        ON )
+option(USE_INTEL_SVML           "Use the Short Vector Math Library (SVML) when compiling with Intel"  ON )
+option(LINK_STATIC_MSVC_RT      "Link MSVC runtime library statically"                                OFF)
+option(LINK_STATIC_GCC          "Link libgcc library statically"                                      OFF)
+option(LINK_STATIC_STDCPP       "Link libstdc++ library statically"                                   OFF)
+option(LINK_STATIC_INTEL        "Link Intel provided libraries statically"                            OFF)
+option(NO_INTEL_LIB             "Restrict linking of all Intel specific libraries"                    OFF)
+option(BUILD_UNIT_TESTS         "Build unit tests"                                                    OFF)
+option(CODE_COVERAGE            "Generate a coverage target using LCOV and genhtml"                   OFF)
+option(ENABLE_RTTI              "Enable support for run-time type information (RTTI)"                 OFF)
+option(ENABLE_EXCEPTIONS        "Enable support for exception handling"                          ${WIN32})
+option(ENABLE_CLANG_TIDY        "Enable static analysis with Clang-Tidy"                              OFF)
+option(ENABLE_CPPCHECK          "Enable static analysis with Cppcheck"                                OFF)
+option(ENABLE_PVS_STUDIO        "Enable static analysis with PVS-Studio"                              OFF)
+option(ENABLE_IWYU              "Enable Include What You Use tool"                                    OFF)
+option(ENABLE_ASAN              "Enable AddressSanitizer"                                             OFF)
+option(ENABLE_UBSAN             "Enable UndefinedBehaviorSanitizer"                                   OFF)
+option(ENABLE_LINK_TRACE        "Enable linker trace flag (detailed output of the linking process)"   OFF)
+option(OPTIMIZE_FOR_CURRENT_CPU "Generate code optimized for the current (native) processor"          OFF)
 
 #-------------------------------------------------------------------------------
 # Variable definitions
 #-------------------------------------------------------------------------------
+
+set(LIB_C             "c"                     )
+set(LIB_MATH          "m"                     )
+set(LIB_STDC_FS       "stdc++fs"              )
+set(LIB_THREADS       "Threads::Threads"      )
+set(LIB_WINSOCK       "WS2_32.Lib"            )
+set(LIB_FMT           "fmt::fmt"              )
+set(LIB_SPDLOG        "spdlog::spdlog"        )
+set(LIB_STRINGPY      "StringPy::stringpy"    )
+set(LIB_ABSTRACT      "Abstract::abstract"    )
+set(LIB_COMMON        "Common::common"        )
+set(LIB_MODEL         "Model::model"          )
+set(LIB_PRESENTER     "Presenter::presenter"  )
+set(LIB_UTIL          "Util::util"            )
+set(LIB_VIEW_CONSOLE  "View::console"         )
 
 include(ProcessorCount)
 ProcessorCount(PROCESSOR_CORES)
@@ -102,7 +118,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
 
 # Set the possible build types
-set(CMAKE_CONFIGURATION_TYPES "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+set(CMAKE_CONFIGURATION_TYPES "Debug" "Release" "RelWithDebInfo")
 
 # Append the relative path to the RPATH list
 list(APPEND CMAKE_BUILD_RPATH "$ORIGIN/.")
@@ -181,7 +197,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<NOT:$<B
 # Include modules
 #-------------------------------------------------------------------------------
 
-include(FetchContent)
+include("FetchContent")
 include("cmake/CompileOptions.cmake")
 include("cmake/ClangTidy.cmake")
 include("cmake/Cppcheck.cmake")

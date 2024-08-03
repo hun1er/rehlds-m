@@ -45,6 +45,7 @@ function(configure_compile_options)
         -Wundef
         -Wunused
         -Wwrite-strings
+        #-Wno-sign-conversion
 
         # C++ diagnostic flags
         $<$<COMPILE_LANGUAGE:CXX>:
@@ -56,6 +57,7 @@ function(configure_compile_options)
           -Woverloaded-virtual
           -Wsign-promo
           -Wzero-as-null-pointer-constant
+          #-Wno-non-virtual-dtor
         >
     )
   endforeach()
@@ -72,7 +74,6 @@ if(USE_LINKER_LLD)
     -Wl,-O2                           # Optimize for speed
     -Wl,--check-sections              # Check section addresses for overlaps
     -Wl,--icf=safe                    # Perform Identical Code Folding (ICF) safely
-    -Wl,--no-lto-legacy-pass-manager  # Do not use legacy pass manager for LTO
     -Wl,--warn-backrefs               # Warn about backreferences in linker scripts
     -Wl,--warn-ifunc-textrel          # Warn about text relocations in ifunc symbols
     -Wl,--warn-symbol-ordering        # Warn about out-of-order symbols

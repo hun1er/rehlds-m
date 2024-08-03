@@ -1,42 +1,40 @@
-cmake_minimum_required(VERSION 3.21...3.27)
-
 #-------------------------------------------------------------------------------
-# Project Definition
+# Variable definitions
 #-------------------------------------------------------------------------------
 
-project("Presenter")
+set(PROJECT_NAME_CAP "Presenter")
+set(PROJECT_NAME_LOW "presenter")
 
 #-------------------------------------------------------------------------------
-# Variable Definitions
+# Project definition
 #-------------------------------------------------------------------------------
 
-set(PNAME_LOWER "presenter")
-set(PNAME_CAPITALIZED "Presenter")
+project("${PROJECT_NAME_CAP}")
 
 #-------------------------------------------------------------------------------
-# Library Definition
+# Library definition
 #-------------------------------------------------------------------------------
 
-add_library("${PNAME_LOWER}" INTERFACE)
-add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
+add_library("${PROJECT_NAME_LOW}" INTERFACE)
+add_library("${PROJECT_NAME_CAP}::${PROJECT_NAME_LOW}" ALIAS "${PROJECT_NAME_LOW}")
 
-target_sources("${PNAME_LOWER}"
+target_sources("${PROJECT_NAME_LOW}"
   INTERFACE
     "input_presenter.hpp"
     "output_presenter.hpp"
 )
 
-target_include_directories("${PNAME_LOWER}"
+target_include_directories("${PROJECT_NAME_LOW}"
   INTERFACE
     "${CMAKE_SOURCE_DIR}/src"
 )
 
 #-------------------------------------------------------------------------------
-# Link Libraries
+# Link libraries
 #-------------------------------------------------------------------------------
 
-target_link_libraries("${PNAME_LOWER}"
+target_link_libraries("${PROJECT_NAME_LOW}"
   INTERFACE
-    "Abstract::abstract"
-    "Model::model"
+    "${LIB_ABSTRACT}"
+    "${LIB_MODEL}"
 )

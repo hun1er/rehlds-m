@@ -48,7 +48,7 @@ function(enable_clang_tidy)
 
   # Find the clang-tidy executable
   find_program(clang_tidy_exe
-    NAMES "clang-tidy" "clang-tidy-15" "clang-tidy-16" "clang-tidy-17" "clang-tidy-18"
+    NAMES "clang-tidy" "clang-tidy-16" "clang-tidy-17" "clang-tidy-18" "clang-tidy-19" "clang-tidy-20"
     HINTS "$ENV{PROGRAMFILES}/LLVM/bin"
   )
 

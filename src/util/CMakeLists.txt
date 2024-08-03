@@ -1,27 +1,25 @@
-cmake_minimum_required(VERSION 3.21...3.27)
-
 #-------------------------------------------------------------------------------
-# Project Definition
+# Variable definitions
 #-------------------------------------------------------------------------------
 
-project("Util")
+set(PROJECT_NAME_CAP "Util")
+set(PROJECT_NAME_LOW "util")
 
 #-------------------------------------------------------------------------------
-# Variable Definitions
+# Project definition
 #-------------------------------------------------------------------------------
 
-set(PNAME_LOWER "util")
-set(PNAME_CAPITALIZED "Util")
+project("${PROJECT_NAME_CAP}")
 
 #-------------------------------------------------------------------------------
-# Library Definition
+# Library definition
 #-------------------------------------------------------------------------------
 
-add_library("${PNAME_LOWER}")
-add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
+add_library("${PROJECT_NAME_LOW}")
+add_library("${PROJECT_NAME_CAP}::${PROJECT_NAME_LOW}" ALIAS "${PROJECT_NAME_LOW}")
 
 # Common sources
-target_sources("${PNAME_LOWER}"
+target_sources("${PROJECT_NAME_LOW}"
   PRIVATE
     "circular_buffer.hpp"
     "console.hpp"
@@ -41,7 +39,7 @@ target_sources("${PNAME_LOWER}"
 )
 
 if(WIN32) # Windows sources
-  target_sources("${PNAME_LOWER}"
+  target_sources("${PROJECT_NAME_LOW}"
     PRIVATE
       "windows/console.cpp"
       "windows/console.hpp"
@@ -58,7 +56,7 @@ if(WIN32) # Windows sources
       "windows/system/process.hpp"
   )
 else() # Unix sources
-  target_sources("${PNAME_LOWER}"
+  target_sources("${PROJECT_NAME_LOW}"
     PRIVATE
       "linux/console.cpp"
       "linux/console.hpp"
@@ -71,25 +69,25 @@ else() # Unix sources
   )
 endif()
 
-target_include_directories("${PNAME_LOWER}"
+target_include_directories("${PROJECT_NAME_LOW}"
   PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
 )
 
 #-------------------------------------------------------------------------------
-# Link Libraries
+# Link libraries
 #-------------------------------------------------------------------------------
 
-target_link_libraries("${PNAME_LOWER}"
+target_link_libraries("${PROJECT_NAME_LOW}"
   PUBLIC
-    "Abstract::abstract"
-    "fmt::fmt"
-    "spdlog::spdlog"
-    "StringPy::stringpy"
+    "${LIB_ABSTRACT}"
+    "${LIB_FMT}"
+    "${LIB_SPDLOG}"
+    "${LIB_STRINGPY}"
 
     $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:
-      "c"
-      "stdc++fs"
+      "${LIB_C}"
+      "${LIB_STDC_FS}"
       "${CMAKE_DL_LIBS}"
     >
 )
@@ -98,7 +96,7 @@ if(WIN32)
   if(NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" OR NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_compile_options("spdlog"
       PRIVATE
-        # Because some idiot added the /MP compilation flag...
+        # Because someone added the /MP compilation flag
         -Wno-unused-command-line-argument
     )
   endif()

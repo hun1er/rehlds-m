@@ -24,6 +24,26 @@ endfunction()
 # Compile Options
 #-------------------------------------------------------------------------------
 
+# Sets the appropriate -march compiler flag based on the compiler ID, version, and optimization preference.
+#
+# @param lang The programming language being used (C or CXX).
+# @param compiler_id The ID of the compiler (GNU or Clang).
+# @param compiler_version The version of the compiler.
+function(set_march_flag lang compiler_id compiler_version)
+  if(OPTIMIZE_FOR_CURRENT_CPU)
+    set(march_flag "-march=native")
+  elseif("${compiler_id}" STREQUAL "GNU" AND "${compiler_version}" VERSION_LESS "11")
+    set(march_flag "-march=nehalem") # nehalem is close to x86-64-v2
+  elseif("${compiler_id}" STREQUAL "Clang" AND "${compiler_version}" VERSION_LESS "12")
+    set(march_flag "-march=nehalem")
+  else()
+    set(march_flag "-march=x86-64-v2")
+  endif()
+
+  string(STRIP "${CMAKE_${lang}_FLAGS} ${march_flag}" march_flag)
+  set(CMAKE_${lang}_FLAGS "${march_flag}" PARENT_SCOPE)
+endfunction()
+
 set(CMAKE_C_FLAGS_DEBUG
   "-g -fno-omit-frame-pointer"
 )
@@ -44,6 +64,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL}")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+set_march_flag("C" "${CMAKE_C_COMPILER_ID}" "${CMAKE_C_COMPILER_VERSION}")
+set_march_flag("CXX" "${CMAKE_CXX_COMPILER_ID}" "${CMAKE_CXX_COMPILER_VERSION}")
 
 add_compile_options(
   -m32                # Generate code for 32-bit environment
@@ -59,12 +81,6 @@ add_compile_options(
   -pipe               # Use pipes rather than intermediate files
   -fdata-sections     # Place each data in its own section
   -ffunction-sections # Place each function in its own section
-
-  # Generate instructions for a specified machine type
-  $<IF:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>,-march=native,-march=x86-64-v2>
-
-  # Tune to the specified cpu-type everything applicable about the generated code
-  $<$<NOT:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>>:-mtune=generic>
 
   # AddressSanitizer
   $<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>
@@ -107,11 +123,8 @@ add_link_options(
   -Wl,--gc-sections   # Perform garbage collection of unused input sections
   -Wl,--no-undefined  # Do not allow undefined symbols
 
-  # Generate instructions for a specified machine type
-  $<IF:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>,-march=native,-march=x86-64-v2>
-
-  # Tune to the specified cpu-type everything applicable about the generated code
-  $<$<NOT:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>>:-mtune=generic>
+  # Detailed output of the linking process
+  $<$<BOOL:${ENABLE_LINK_TRACE}>:-Wl,--trace>
 
   # Warn about common symbols when AddressSanitizer is not enabled
   $<$<NOT:$<BOOL:${ENABLE_ASAN}>>:-Wl,--warn-common>

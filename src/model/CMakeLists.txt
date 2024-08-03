@@ -1,27 +1,25 @@
-cmake_minimum_required(VERSION 3.21...3.27)
-
 #-------------------------------------------------------------------------------
-# Project Definition
+# Variable definitions
 #-------------------------------------------------------------------------------
 
-project("Model")
+set(PROJECT_NAME_CAP "Model")
+set(PROJECT_NAME_LOW "model")
 
 #-------------------------------------------------------------------------------
-# Variable Definitions
+# Project definition
 #-------------------------------------------------------------------------------
 
-set(PNAME_LOWER "model")
-set(PNAME_CAPITALIZED "Model")
+project("${PROJECT_NAME_CAP}")
 
 #-------------------------------------------------------------------------------
-# Library Definition
+# Library definition
 #-------------------------------------------------------------------------------
 
-add_library("${PNAME_LOWER}")
-add_library("${PNAME_CAPITALIZED}::${PNAME_LOWER}" ALIAS "${PNAME_LOWER}")
+add_library("${PROJECT_NAME_LOW}")
+add_library("${PROJECT_NAME_CAP}::${PROJECT_NAME_LOW}" ALIAS "${PROJECT_NAME_LOW}")
 
 # Common sources
-target_sources("${PNAME_LOWER}"
+target_sources("${PROJECT_NAME_LOW}"
   PRIVATE
     "cmdline_args.cpp"
     "cmdline_args.hpp"
@@ -35,40 +33,40 @@ target_sources("${PNAME_LOWER}"
 )
 
 if(WIN32) # Windows sources
-  target_sources("${PNAME_LOWER}"
+  target_sources("${PROJECT_NAME_LOW}"
     PRIVATE
       "windows/server_loop.cpp"
   )
 else() # Unix sources
-  target_sources("${PNAME_LOWER}"
+  target_sources("${PROJECT_NAME_LOW}"
     PRIVATE
       "linux/server_loop.cpp"
   )
 endif()
 
-target_compile_definitions("${PNAME_LOWER}"
+target_compile_definitions("${PROJECT_NAME_LOW}"
   PRIVATE
     $<$<PLATFORM_ID:Windows>:
       NOMINMAX
     >
 )
 
-target_include_directories("${PNAME_LOWER}"
+target_include_directories("${PROJECT_NAME_LOW}"
   PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
 )
 
 #-------------------------------------------------------------------------------
-# Link Libraries
+# Link libraries
 #-------------------------------------------------------------------------------
 
-target_link_libraries("${PNAME_LOWER}"
+target_link_libraries("${PROJECT_NAME_LOW}"
   PUBLIC
-    "Common::common"
-    "Threads::Threads"
-    "Util::util"
+    "${LIB_COMMON}"
+    "${LIB_THREADS}"
+    "${LIB_UTIL}"
 
     $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:Darwin>>:
-      "c" "m"
+      "${LIB_C}" "${LIB_MATH}"
     >
 )
