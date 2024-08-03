@@ -1,0 +1,87 @@
+name: Build and Test
+
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.txt"
+      - "**/docs/**"
+      - "**/examples/**"
+
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.txt"
+      - "**/docs/**"
+      - "**/examples/**"
+
+permissions:
+  contents: read
+
+env:
+  CPU_CORES: 2
+  VSCVARS_PATH: 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsamd64_x86.bat'
+
+jobs:
+  build-linux:
+    name: Build on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc gcc-multilib g++ g++-multilib ninja-build
+
+      - name: Build using CMake
+        run: |
+          cmake --preset unittest-ninja-gcc-linux
+          cmake --build --preset unittest-ninja-gcc-linux --parallel ${{ env.CPU_CORES }}
+
+      - name: Run unit tests
+        run: ctest --preset ninja-gcc-linux --parallel ${{ env.CPU_CORES }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rehldsm-linux
+          path: bin/
+          if-no-files-found: error
+
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: cmd
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build using CMake
+        run: |
+          call "${{ env.VSCVARS_PATH }}"
+          cmake --preset unittest-ninja-msvc-windows
+          cmake --build --preset unittest-ninja-msvc-windows --parallel ${{ env.CPU_CORES }}
+
+      - name: Run unit tests
+        run: ctest --preset ninja-msvc-windows --parallel ${{ env.CPU_CORES }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rehldsm-windows
+          path: bin/
+          if-no-files-found: error
