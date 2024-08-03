@@ -19,6 +19,16 @@
       "hidden": true
     },
     {
+      "name": "vs2022",
+      "description": "Use Visual Studio 2022 generator",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {
+        "value": "Win32",
+        "strategy": "set"
+      },
+      "hidden": true
+    },
+    {
       "name": "ninja",
       "description": "Use Ninja generator",
       "generator": "Ninja",
@@ -125,6 +135,15 @@
         }
       },
       "hidden": true
+    },
+    {
+      "name": "vs2022-msvc-windows",
+      "inherits": [
+        "base",
+        "vs2022",
+        "msvc",
+        "windows"
+      ]
     },
     {
       "name": "ninja-msvc-windows",
@@ -392,6 +411,39 @@
         "rhs": "Linux"
       },
       "hidden": true
+    },
+    {
+      "name": "vs2022-msvc-windows-debug",
+      "displayName": "VS 2022 MSVC Debug",
+      "description": "Build using Visual Studio 17 2022 generator and MSVC compiler with Debug configuration",
+      "configurePreset": "vs2022-msvc-windows",
+      "configuration": "Debug",
+      "inherits": [
+        "base",
+        "windows"
+      ]
+    },
+    {
+      "name": "vs2022-msvc-windows-release",
+      "displayName": "VS 2022 MSVC Release",
+      "description": "Build using Visual Studio 17 2022 generator and MSVC compiler with Release configuration",
+      "configurePreset": "vs2022-msvc-windows",
+      "configuration": "Release",
+      "inherits": [
+        "base",
+        "windows"
+      ]
+    },
+    {
+      "name": "vs2022-msvc-windows-reldebinfo",
+      "displayName": "VS 2022 MSVC RelWithDebInfo",
+      "description": "Build using Visual Studio 17 2022 generator and MSVC compiler with RelWithDebInfo configuration",
+      "configurePreset": "vs2022-msvc-windows",
+      "configuration": "RelWithDebInfo",
+      "inherits": [
+        "base",
+        "windows"
+      ]
     },
     {
       "name": "ninja-msvc-windows-debug",
