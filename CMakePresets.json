@@ -123,7 +123,8 @@
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
         "CMAKE_C_COMPILER_TARGET": "i386-pc-windows-msvc",
-        "CMAKE_CXX_COMPILER_TARGET": "i386-pc-windows-msvc"
+        "CMAKE_CXX_COMPILER_TARGET": "i386-pc-windows-msvc",
+        "CMAKE_CL_SHOWINCLUDES_PREFIX": "Note: including file:"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
@@ -549,6 +550,9 @@
       "inherits": [
         "base",
         "windows"
+      ],
+      "targets": [
+        "pvs_analysis"
       ]
     },
     {
@@ -559,6 +563,13 @@
       "inherits": [
         "base",
         "windows"
+      ],
+      "targets": [
+        "hlds",
+        "common_tests",
+        "core_tests",
+        "model_tests",
+        "util_tests"
       ]
     },
     {
@@ -698,6 +709,9 @@
       "inherits": [
         "base",
         "linux"
+      ],
+      "targets": [
+        "pvs_analysis"
       ]
     },
     {
@@ -708,6 +722,13 @@
       "inherits": [
         "base",
         "linux"
+      ],
+      "targets": [
+        "hlds",
+        "common_tests",
+        "core_tests",
+        "model_tests",
+        "util_tests"
       ]
     }
   ],
@@ -729,6 +750,7 @@
     },
     {
       "name": "ninja-msvc-windows",
+      "displayName": "Complete Test Suite",
       "configurePreset": "unittest-ninja-msvc-windows",
       "inherits": [
         "base"
@@ -741,6 +763,7 @@
     },
     {
       "name": "ninja-gcc-linux",
+      "displayName": "Complete Test Suite",
       "configurePreset": "unittest-ninja-gcc-linux",
       "inherits": [
         "base"

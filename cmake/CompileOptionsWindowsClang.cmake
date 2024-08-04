@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Compile Options
+# Compiler Flags
 #-------------------------------------------------------------------------------
 
 add_compile_options(
@@ -17,22 +17,34 @@ add_compile_options(
   $<IF:$<BOOL:${OPTIMIZE_FOR_CURRENT_CPU}>,-march=native,-march=x86-64-v2>
 )
 
+#-------------------------------------------------------------------------------
+# Linker Flags
+#-------------------------------------------------------------------------------
+
+add_link_options(
+  # Generate debug info
+  $<$<CONFIG:RelWithDebInfo>:/DEBUG:FULL>
+)
+
+#-------------------------------------------------------------------------------
+# Configure Functions
+#-------------------------------------------------------------------------------
+
 # Adds additional compile options for a list of targets.
 #
 # @param TARGETS The list of target names to add compile options for.
 function(configure_compile_options)
   # Parse the arguments passed to the function
-  cmake_parse_arguments("CO" "" "" "TARGETS" ${ARGN})
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
 
   # If TARGETS is not set, print an error message and stop processing
-  if(NOT CO_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
   endif()
 
   # Loop over the list of targets, add compile options
-  foreach(target_name IN LISTS CO_TARGETS)
+  foreach(target_name IN LISTS ARG_TARGETS)
     message(STATUS "Configuring compile options for target \"${target_name}\"")
-
     target_compile_options("${target_name}"
       PRIVATE
         /W4             # Output warning level
@@ -79,12 +91,3 @@ function(configure_compile_options)
     )
   endforeach()
 endfunction()
-
-#-------------------------------------------------------------------------------
-# Link Options
-#-------------------------------------------------------------------------------
-
-add_link_options(
-  # Generate debug info
-  $<$<CONFIG:RelWithDebInfo>:/DEBUG:FULL>
-)

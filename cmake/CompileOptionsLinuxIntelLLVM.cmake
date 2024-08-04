@@ -1,6 +1,15 @@
 #-------------------------------------------------------------------------------
-# Compile Options
+# Compiler Flags
 #-------------------------------------------------------------------------------
+
+# Set the compiler options for interprocedural optimization (IPO)
+if("${CMAKE_C_COMPILER_ID}" STREQUAL "IntelLLVM")
+  set(CMAKE_C_COMPILE_OPTIONS_IPO "-flto=full")
+endif()
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "IntelLLVM")
+  set(CMAKE_CXX_COMPILE_OPTIONS_IPO "-flto=full")
+endif()
 
 add_compile_options(
   # Optimize for debugging for Debug builds
@@ -10,22 +19,25 @@ add_compile_options(
   $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:-ggdb>
 )
 
+#-------------------------------------------------------------------------------
+# Configure Functions
+#-------------------------------------------------------------------------------
+
 # Adds additional compile options for a list of targets.
 #
 # @param TARGETS The list of target names to add compile options for.
 function(configure_compile_options)
   # Parse the arguments passed to the function
-  cmake_parse_arguments("CO" "" "" "TARGETS" ${ARGN})
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
 
   # If TARGETS is not set, print an error message and stop processing
-  if(NOT CO_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
   endif()
 
   # Loop over the list of targets, add compile options
-  foreach(target_name IN LISTS CO_TARGETS)
+  foreach(target_name IN LISTS ARG_TARGETS)
     message(STATUS "Configuring compile options for target \"${target_name}\"")
-
     target_compile_options("${target_name}"
       PRIVATE
         # Common diagnostic flags

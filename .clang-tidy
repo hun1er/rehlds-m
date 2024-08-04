@@ -11,23 +11,11 @@ Checks: >-
   -objc-*,
   -openmp-*,
   -zircon-*,
-  -bugprone-easily-swappable-parameters,
-  -concurrency-mt-unsafe,
-  -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-avoid-non-const-global-variables,
-  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
-  -cppcoreguidelines-pro-type-union-access,
-  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
   -google-build-using-namespace,
   -google-readability-namespace-comments,
-  -hicpp-no-array-decay,
-  -hicpp-signed-bitwise,
-  -hicpp-vararg,
-  -misc-no-recursion,
-  -modernize-use-trailing-return-type,
-  -readability-identifier-length,
-  -readability-magic-numbers
+  -readability-identifier-length
 WarningsAsErrors: ""
 HeaderFilterRegex: ""
 FormatStyle: "file"
@@ -57,7 +45,7 @@ CheckOptions:
   - key: readability-identifier-naming.MethodCase
     value: lower_case
   - key: readability-identifier-naming.NamespaceCase
-    value: lower_case
+    value: CamelCase
   - key: readability-identifier-naming.PrivateMemberSuffix
     value: "_"
   - key: readability-identifier-naming.StructCase

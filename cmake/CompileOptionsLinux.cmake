@@ -2,26 +2,16 @@
 # Compile Definitions
 #-------------------------------------------------------------------------------
 
-# Adds additional compile definitions for a list of targets.
-#
-# @param TARGETS The list of target names to add compile definitions for.
-function(configure_compile_definitions)
-  # Parse the arguments passed to the function
-  cmake_parse_arguments("CD" "" "" "TARGETS" ${ARGN})
-
-  # If TARGETS is not set, print an error message and stop processing
-  if(NOT CD_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
-  endif()
-
-  # Loop over the list of targets, add compile definitions
-  foreach(target_name IN LISTS CD_TARGETS)
-    message(STATUS "Configuring compile definitions for target \"${target_name}\"")
-  endforeach()
-endfunction()
+add_compile_definitions(
+  $<$<CONFIG:Debug>:_FORTIFY_SOURCE=2>
+  $<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS=1>
+  $<$<CONFIG:Debug>:_GLIBCXX_CONCEPT_CHECKS=1>
+  $<$<CONFIG:Debug>:_GLIBCXX_DEBUG_PEDANTIC=1>
+  $<$<CONFIG:Debug>:_GLIBCXX_DEBUG=1>
+)
 
 #-------------------------------------------------------------------------------
-# Compile Options
+# Compiler Flags
 #-------------------------------------------------------------------------------
 
 # Sets the appropriate -march compiler flag based on the compiler ID, version, and optimization preference.
@@ -35,7 +25,7 @@ function(set_march_flag lang compiler_id compiler_version)
   elseif("${compiler_id}" STREQUAL "GNU" AND "${compiler_version}" VERSION_LESS "11")
     set(march_flag "-march=nehalem") # nehalem is close to x86-64-v2
   elseif("${compiler_id}" STREQUAL "Clang" AND "${compiler_version}" VERSION_LESS "12")
-    set(march_flag "-march=nehalem")
+    set(march_flag "-march=nehalem") # nehalem is close to x86-64-v2
   else()
     set(march_flag "-march=x86-64-v2")
   endif()
@@ -95,26 +85,8 @@ add_compile_options(
   $<$<COMPILE_LANGUAGE:CXX>:$<IF:$<BOOL:${ENABLE_EXCEPTIONS}>,-fexceptions,-fno-exceptions>>
 )
 
-# Adds additional compile options for a list of targets.
-#
-# @param TARGETS The list of target names to add compile options for.
-function(configure_compile_options)
-  # Parse the arguments passed to the function
-  cmake_parse_arguments("CO" "" "" "TARGETS" ${ARGN})
-
-  # If TARGETS is not set, print an error message and stop processing
-  if(NOT CO_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
-  endif()
-
-  # Loop over the list of targets, add compile options
-  foreach(target_name IN LISTS CO_TARGETS)
-    message(STATUS "Configuring compile options for target \"${target_name}\"")
-  endforeach()
-endfunction()
-
 #-------------------------------------------------------------------------------
-# Link Options
+# Linker Flags
 #-------------------------------------------------------------------------------
 
 add_link_options(
@@ -156,20 +128,60 @@ if(NOT USE_LINKER_GOLD AND NOT USE_LINKER_LLD)
   )
 endif()
 
+#-------------------------------------------------------------------------------
+# Configure Functions
+#-------------------------------------------------------------------------------
+
+# Adds additional compile definitions for a list of targets.
+#
+# @param TARGETS The list of target names to add compile definitions for.
+function(configure_compile_definitions)
+  # Parse the arguments passed to the function
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
+
+  # If TARGETS is not set, print an error message and stop processing
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
+  endif()
+
+  # Loop over the list of targets, add compile definitions
+  foreach(target_name IN LISTS ARG_TARGETS)
+    message(STATUS "Configuring compile definitions for target \"${target_name}\"")
+  endforeach()
+endfunction()
+
+# Adds additional compile options for a list of targets.
+#
+# @param TARGETS The list of target names to add compile options for.
+function(configure_compile_options)
+  # Parse the arguments passed to the function
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
+
+  # If TARGETS is not set, print an error message and stop processing
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
+  endif()
+
+  # Loop over the list of targets, add compile options
+  foreach(target_name IN LISTS ARG_TARGETS)
+    message(STATUS "Configuring compile options for target \"${target_name}\"")
+  endforeach()
+endfunction()
+
 # Adds additional link options for a list of targets.
 #
 # @param TARGETS The list of target names to add link options for.
 function(configure_link_options)
   # Parse the arguments passed to the function
-  cmake_parse_arguments("LO" "" "" "TARGETS" ${ARGN})
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
 
   # If TARGETS is not set, print an error message and stop processing
-  if(NOT LO_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
   endif()
 
   # Loop over the list of targets, add link options
-  foreach(target_name IN LISTS LO_TARGETS)
+  foreach(target_name IN LISTS ARG_TARGETS)
     message(STATUS "Configuring link options for target \"${target_name}\"")
   endforeach()
 endfunction()
