@@ -2,7 +2,7 @@
 Language: Cpp
 Standard: c++17
 AccessModifierOffset: -2
-AlignAfterOpenBracket: Align
+AlignAfterOpenBracket: AlwaysBreak
 AlignArrayOfStructures: Left
 AlignConsecutiveAssignments: None
 AlignConsecutiveBitFields: None
@@ -11,8 +11,8 @@ AlignConsecutiveMacros: None
 AlignEscapedNewlines: Right
 AlignOperands: Align
 AlignTrailingComments: true
-AllowAllArgumentsOnNextLine: false
-AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortEnumsOnASingleLine: true
@@ -28,15 +28,15 @@ BinPackParameters: true
 BitFieldColonSpacing: Both
 BraceWrapping:
   AfterCaseLabel: false
-  AfterClass: true
+  AfterClass: false
   AfterControlStatement: Never
-  AfterEnum: true
+  AfterEnum: false
   AfterExternBlock: false
   AfterFunction: true
-  AfterNamespace: true
+  AfterNamespace: false
   AfterObjCDeclaration: false
-  AfterStruct: true
-  AfterUnion: true
+  AfterStruct: false
+  AfterUnion: false
   BeforeCatch: true
   BeforeElse: true
   BeforeLambdaBody: false
@@ -53,7 +53,7 @@ BreakConstructorInitializers: AfterColon
 BreakInheritanceList: AfterColon
 BreakStringLiterals: true
 ColumnLimit: 120
-CommentPragmas: '^ IWYU pragma:'
+CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
 ConstructorInitializerIndentWidth: 2
 ContinuationIndentWidth: 2
@@ -66,26 +66,20 @@ EmptyLineBeforeAccessModifier: LogicalBlock
 FixNamespaceComments: false
 IncludeBlocks: Merge
 IncludeCategories:
-  - Regex: '^"(llvm|llvm-c|clang|clang-c)/'
-    Priority: 2
-    SortPriority: 0
-    CaseSensitive: false
-  - Regex: '^((<|")(boost|gtest|gmock|isl|json)/)'
-    Priority: 3
-    SortPriority: 0
-    CaseSensitive: false
-  - Regex: '<(?!bcrypt.h)[[:alnum:].]+>'
-    Priority: 4
-    CaseSensitive: false
-  - Regex: '^([<"]bcrypt.h)'
-    Priority: 5
-    CaseSensitive: false
-  - Regex: '.*'
+  - Regex: '^".*'
     Priority: 1
     SortPriority: 0
     CaseSensitive: false
-IncludeIsMainRegex: '(_test)?$'
-IncludeIsMainSourceRegex: ''
+  - Regex: '^<.*\/'
+    Priority: 2
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: "^<[^/].*"
+    Priority: 3
+    SortPriority: 0
+    CaseSensitive: false
+IncludeIsMainRegex: "(_test)?$"
+IncludeIsMainSourceRegex: ""
 IndentAccessModifiers: false
 IndentCaseBlocks: false
 IndentCaseLabels: true
@@ -99,8 +93,8 @@ IndentWrappedFunctionNames: true
 InsertTrailingCommas: None
 KeepEmptyLinesAtTheStartOfBlocks: false
 LambdaBodyIndentation: Signature
-MacroBlockBegin: ''
-MacroBlockEnd: ''
+MacroBlockBegin: ""
+MacroBlockEnd: ""
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: All
 PackConstructorInitializers: CurrentLine
@@ -162,4 +156,3 @@ SpacesInSquareBrackets: false
 TabWidth: 4
 UseCRLF: false
 UseTab: Never
-...

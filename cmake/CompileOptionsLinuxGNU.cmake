@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Compile Options
+# Compiler Flags
 #-------------------------------------------------------------------------------
 
 add_compile_options(
@@ -26,22 +26,57 @@ if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12)
   )
 endif()
 
+#-------------------------------------------------------------------------------
+# Linker Flags
+#-------------------------------------------------------------------------------
+
+# Check if the project is using the Gold linker
+if(USE_LINKER_GOLD)
+  add_link_options(
+    -fuse-ld=gold                       # Use the gold linker
+    -Wl,-O3                             # Optimize for speed
+    -Wl,--icf-iterations=5              # Perform 5 ICF iterations
+    -Wl,--icf=safe                      # Perform Identical Code Folding (ICF) safely
+    -Wl,--no-incremental                # Do not perform incremental linking
+    -Wl,--no-whole-archive              # Do not include all archive members
+    -Wl,--relax                         # Relax branch and call instructions
+    -Wl,--unresolved-symbols=report-all # Report all unresolved symbols
+    -Wl,--warn-drop-version             # Warn about dropped version information
+    -Wl,--warn-execstack                # Warn about executable stacks
+    -Wl,--warn-search-mismatch          # Warn about search path mismatches
+    -Wl,--warn-shared-textrel           # Warn about shared text relocations
+
+    #-Wl,--print-gc-sections            # Print garbage collected sections
+    #-Wl,--print-icf-sections           # Print ICF sections
+    #-Wl,--stats                        # Print linker statistics
+
+    # Detect One Definition Rule (ODR) violations when AddressSanitizer is not enabled
+    $<$<NOT:$<BOOL:${ENABLE_ASAN}>>:-Wl,--detect-odr-violations>
+
+    # Do not generate unwind information for Release or MinSizeRel builds
+    $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-Wl,--no-ld-generated-unwind-info>
+  )
+endif()
+
+#-------------------------------------------------------------------------------
+# Configure Functions
+#-------------------------------------------------------------------------------
+
 # Adds additional compile options for a list of targets.
 #
 # @param TARGETS The list of target names to add compile options for.
 function(configure_compile_options)
   # Parse the arguments passed to the function
-  cmake_parse_arguments("CO" "" "" "TARGETS" ${ARGN})
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
 
   # If TARGETS is not set, print an error message and stop processing
-  if(NOT CO_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
   endif()
 
   # Loop over the list of targets, add compile options
-  foreach(target_name IN LISTS CO_TARGETS)
+  foreach(target_name IN LISTS ARG_TARGETS)
     message(STATUS "Configuring compile options for target \"${target_name}\"")
-
     target_compile_options("${target_name}"
       PRIVATE
         # Common diagnostic flags
@@ -82,35 +117,3 @@ function(configure_compile_options)
     )
   endforeach()
 endfunction()
-
-#-------------------------------------------------------------------------------
-# Link Options
-#-------------------------------------------------------------------------------
-
-# Check if the project is using the Gold linker
-if(USE_LINKER_GOLD)
-  add_link_options(
-    -fuse-ld=gold                       # Use the gold linker
-    -Wl,-O3                             # Optimize for speed
-    -Wl,--icf-iterations=5              # Perform 5 ICF iterations
-    -Wl,--icf=safe                      # Perform Identical Code Folding (ICF) safely
-    -Wl,--no-incremental                # Do not perform incremental linking
-    -Wl,--no-whole-archive              # Do not include all archive members
-    -Wl,--relax                         # Relax branch and call instructions
-    -Wl,--unresolved-symbols=report-all # Report all unresolved symbols
-    -Wl,--warn-drop-version             # Warn about dropped version information
-    -Wl,--warn-execstack                # Warn about executable stacks
-    -Wl,--warn-search-mismatch          # Warn about search path mismatches
-    -Wl,--warn-shared-textrel           # Warn about shared text relocations
-
-    #-Wl,--print-gc-sections            # Print garbage collected sections
-    #-Wl,--print-icf-sections           # Print ICF sections
-    #-Wl,--stats                        # Print linker statistics
-
-    # Detect One Definition Rule (ODR) violations when AddressSanitizer is not enabled
-    $<$<NOT:$<BOOL:${ENABLE_ASAN}>>:-Wl,--detect-odr-violations>
-
-    # Do not generate unwind information for Release or MinSizeRel builds
-    $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-Wl,--no-ld-generated-unwind-info>
-  )
-endif()

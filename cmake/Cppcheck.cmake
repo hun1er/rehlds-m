@@ -12,49 +12,49 @@
 # @param CHECK_CONFIG [optional] Check the configuration in Cppcheck.
 function(enable_cppcheck)
   # Parse the arguments passed to the function
-  cmake_parse_arguments("CPPC" ""
+  cmake_parse_arguments("ARG" ""
     "PLATFORM;ENABLE;DISABLE;LIBRARY;INCONCLUSIVE;CTU_DEPTH;QUIET;VERBOSE;CHECK_CONFIG"
     "TARGETS"
     ${ARGN}
   )
 
   # If TARGETS is not set, print an error message and stop processing
-  if(NOT CPPC_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
   endif()
 
   # If PLATFORM is not set, set it to "native"
-  if(NOT DEFINED CPPC_PLATFORM)
+  if(NOT DEFINED ARG_PLATFORM)
     if(WIN32)
-      set(CPPC_PLATFORM "win32A")
+      set(ARG_PLATFORM "win32A")
     else()
-      set(CPPC_PLATFORM "unix32")
+      set(ARG_PLATFORM "unix32")
     endif()
   endif()
 
   # If ENABLE is not set, set it to "all"
-  if(NOT DEFINED CPPC_ENABLE)
-    set(CPPC_ENABLE "all")
+  if(NOT DEFINED ARG_ENABLE)
+    set(ARG_ENABLE "all")
   endif()
 
   # If DISABLE is not set, set it to "unusedFunction"
-  if(NOT DEFINED CPPC_DISABLE)
-    set(CPPC_DISABLE "unusedFunction")
+  if(NOT DEFINED ARG_DISABLE)
+    set(ARG_DISABLE "unusedFunction")
   endif()
 
   # If LIBRARY is not set, set it to a list of libraries
-  if(NOT DEFINED CPPC_LIBRARY)
-    set(CPPC_LIBRARY "boost,gnu,googletest,libcurl,posix,qt,sdl,std,windows,zlib")
+  if(NOT DEFINED ARG_LIBRARY)
+    set(ARG_LIBRARY "boost,gnu,googletest,libcurl,posix,qt,sdl,std,windows,zlib")
   endif()
 
   # If CTU_DEPTH is not set, set it to "16"
-  if(NOT DEFINED CPPC_CTU_DEPTH)
-    set(CPPC_CTU_DEPTH "16")
+  if(NOT DEFINED ARG_CTU_DEPTH)
+    set(ARG_CTU_DEPTH "16")
   endif()
 
   # If QUIET is not set, set it to ON
-  if(NOT DEFINED CPPC_QUIET)
-    set(CPPC_QUIET ON)
+  if(NOT DEFINED ARG_QUIET)
+    set(ARG_QUIET ON)
   endif()
 
   # Find the cppcheck executable
@@ -72,12 +72,12 @@ function(enable_cppcheck)
   # Add options to the cppcheck command
   list(APPEND cppcheck_exe
     "-j${PROCESSOR_CORES}" # Start <jobs> threads to do the checking simultaneously.
-    "--platform=${CPPC_PLATFORM}" # Specifies platform specific types and sizes.
-    "--enable=${CPPC_ENABLE}" # Enable additional checks.
-    "--disable=${CPPC_DISABLE}" # Disable individual checks.
-    "--library=${CPPC_LIBRARY}" # Load file <cfg> that contains information about types and functions.
+    "--platform=${ARG_PLATFORM}" # Specifies platform specific types and sizes.
+    "--enable=${ARG_ENABLE}" # Enable additional checks.
+    "--disable=${ARG_DISABLE}" # Disable individual checks.
+    "--library=${ARG_LIBRARY}" # Load file <cfg> that contains information about types and functions.
     "--max-configs=50" # Maximum number of configurations to check in a file before skipping it.
-    "--max-ctu-depth=${CPPC_CTU_DEPTH}" # Max depth in whole program analysis.
+    "--max-ctu-depth=${ARG_CTU_DEPTH}" # Max depth in whole program analysis.
     "--inline-suppr" # Enable inline suppressions.
   )
 
@@ -97,31 +97,31 @@ function(enable_cppcheck)
   endif()
 
   # If the INCONCLUSIVE option is specified, add it to the cppcheck command
-  if(CPPC_INCONCLUSIVE)
+  if(ARG_INCONCLUSIVE)
     # Allow that Cppcheck reports even though the analysis is inconclusive.
     list(APPEND cppcheck_exe "--inconclusive")
   endif()
 
   # If the QUIET option is specified, add it to the cppcheck command
-  if(CPPC_QUIET)
+  if(ARG_QUIET)
     # Do not show progress reports.
     list(APPEND cppcheck_exe "--quiet")
   endif()
 
   # If VERBOSE is specified, add it to the cppcheck command
-  if(VERBOSE)
+  if(ARG_VERBOSE)
     # Output more detailed error information.
     list(APPEND cppcheck_exe "--verbose")
   endif()
 
   # If CHECK_CONFIG is specified, add it to the cppcheck command
-  if(CPPC_CHECK_CONFIG)
+  if(ARG_CHECK_CONFIG)
     # Check cppcheck configuration.
     list(APPEND cppcheck_exe "--check-config")
   endif()
 
   # Loop over the list of targets, enable cppcheck for that target
-  foreach(target_name IN LISTS CPPC_TARGETS)
+  foreach(target_name IN LISTS ARG_TARGETS)
     message(STATUS "Enabling Cppcheck for target \"${target_name}\"")
 
     # Set the working directory for cppcheck and create it if it doesn't exist

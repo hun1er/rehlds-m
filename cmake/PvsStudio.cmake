@@ -34,20 +34,20 @@ FetchContent_Declare(
 # @param CONVERTER_ARGS [optional] Additional arguments to pass to the PVS-Studio log converter.
 function(enable_pvs_studio)
   # Parse the arguments passed to the function
-  cmake_parse_arguments("PVS" ""
+  cmake_parse_arguments("ARG" ""
     "PLATFORM;PREPROCESSOR;CONFIG;SUPPRESS_BASE"
     "TARGETS;MODE;DEPENDS;C_FLAGS;CXX_FLAGS;ARGS;CONVERTER_ARGS"
     ${ARGN}
   )
 
   # If TARGETS is not set, print an error message and stop processing
-  if(NOT PVS_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
   endif()
 
   # Set default value for MODE if not defined
-  if(NOT DEFINED PVS_MODE)
-    list(APPEND PVS_MODE
+  if(NOT DEFINED ARG_MODE)
+    list(APPEND ARG_MODE
       #AUTOSAR:1,2,3
       #MISRA:1,2,3
       OWASP:1,2,3
@@ -58,62 +58,62 @@ function(enable_pvs_studio)
   endif()
 
   # Set value of PLATFORM based on operating system
-  if(NOT DEFINED PVS_PLATFORM)
+  if(NOT DEFINED ARG_PLATFORM)
     if(APPLE)
-      set(PVS_PLATFORM "macos")
+      set(ARG_PLATFORM "macos")
     elseif(UNIX)
-      set(PVS_PLATFORM "linux32")
+      set(ARG_PLATFORM "linux32")
     else()
-      set(PVS_PLATFORM "win32")
+      set(ARG_PLATFORM "win32")
     endif()
   endif()
 
   # Set value of PREPROCESSOR based on compiler being used
-  if(NOT DEFINED PVS_PREPROCESSOR)
+  if(NOT DEFINED ARG_PREPROCESSOR)
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
-      set(PVS_PREPROCESSOR "clang")
+      set(ARG_PREPROCESSOR "clang")
     elseif(MSVC)
-      set(PVS_PREPROCESSOR "visualcpp")
+      set(ARG_PREPROCESSOR "visualcpp")
     else()
-      set(PVS_PREPROCESSOR "gcc")
+      set(ARG_PREPROCESSOR "gcc")
     endif()
   endif()
 
   # Set default value for CONFIG if not defined
-  if(NOT DEFINED PVS_CONFIG)
+  if(NOT DEFINED ARG_CONFIG)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.pvs-studio")
-      set(PVS_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/.pvs-studio")
+      set(ARG_CONFIG "${CMAKE_CURRENT_SOURCE_DIR}/.pvs-studio")
     elseif(EXISTS "${CMAKE_SOURCE_DIR}/.pvs-studio")
-      set(PVS_CONFIG "${CMAKE_SOURCE_DIR}/.pvs-studio")
+      set(ARG_CONFIG "${CMAKE_SOURCE_DIR}/.pvs-studio")
     endif()
   endif()
 
   # Set default value for SUPPRESS_BASE if not defined
-  if(NOT DEFINED PVS_SUPPRESS_BASE)
-    set(PVS_SUPPRESS_BASE "")
+  if(NOT DEFINED ARG_SUPPRESS_BASE)
+    set(ARG_SUPPRESS_BASE "")
   endif()
 
   # Set default value for DEPENDS if not defined
-  if(NOT DEFINED PVS_DEPENDS)
-    set(PVS_DEPENDS "")
+  if(NOT DEFINED ARG_DEPENDS)
+    set(ARG_DEPENDS "")
   endif()
 
   # Set default value for C_FLAGS if not defined
-  if(NOT DEFINED PVS_C_FLAGS)
-    set(PVS_C_FLAGS "")
+  if(NOT DEFINED ARG_C_FLAGS)
+    set(ARG_C_FLAGS "")
   endif()
 
   # Set default value for CXX_FLAGS if not defined
-  if(NOT DEFINED PVS_CXX_FLAGS)
-    set(PVS_CXX_FLAGS "")
+  if(NOT DEFINED ARG_CXX_FLAGS)
+    set(ARG_CXX_FLAGS "")
   endif()
 
   # Set default value for ARGS if not defined
-  list(APPEND PVS_ARGS "--threads" "${PROCESSOR_CORES}")
+  list(APPEND ARG_ARGS "--threads" "${PROCESSOR_CORES}")
 
   # Set default value for CONVERTER_ARGS if not defined
-  if(NOT DEFINED PVS_CONVERTER_ARGS)
-    set(PVS_CONVERTER_ARGS --excludedCodes V1042)
+  if(NOT DEFINED ARG_CONVERTER_ARGS)
+    set(ARG_CONVERTER_ARGS --excludedCodes V1042)
   endif()
 
   # Include PVS-Studio.cmake file
@@ -121,7 +121,7 @@ function(enable_pvs_studio)
   include("${pvs_cmakemodule_SOURCE_DIR}/PVS-Studio.cmake")
 
   # Loop over the list of targets
-  foreach(target_name IN LISTS PVS_TARGETS)
+  foreach(target_name IN LISTS ARG_TARGETS)
     message(STATUS "Enabling PVS-Studio for target \"${target_name}\"")
   endforeach()
 
@@ -129,7 +129,7 @@ function(enable_pvs_studio)
     # Target options:
     ALL                                   # Add PVS-Studio target to default build
     TARGET "pvs_analysis"                 # Name of analysis target
-    ANALYZE ${PVS_TARGETS}                # Targets to analyze
+    ANALYZE ${ARG_TARGETS}                # Targets to analyze
     #RECURSIVE                            # Analyze target's dependencies (requires CMake 3.5+)
     #COMPILE_COMMANDS                     # Use compile_commands.json instead of targets (specified by the 'ANALYZE' option)
 
@@ -137,26 +137,26 @@ function(enable_pvs_studio)
     OUTPUT                                # Prints report to stdout
     #LOG path                             # Path to report (default: ${CMAKE_CURRENT_BINARY_DIR}/PVS-Studio.log)
     #FORMAT format                        # Format of report
-    MODE ${PVS_MODE}                      # Analyzers/levels filter (default: GA:1,2)
+    MODE ${ARG_MODE}                      # Analyzers/levels filter (default: GA:1,2)
     HIDE_HELP                             # Do not print help message
 
     # Analyzer options:
-    PLATFORM "${PVS_PLATFORM}"            # linux32/linux64 (default: linux64)
-    PREPROCESSOR "${PVS_PREPROCESSOR}"    # Preprocessor type: gcc/clang (default: auto detected)
+    PLATFORM "${ARG_PLATFORM}"            # linux32/linux64 (default: linux64)
+    PREPROCESSOR "${ARG_PREPROCESSOR}"    # Preprocessor type: gcc/clang (default: auto detected)
     #LICENSE path                         # Path to PVS-Studio.lic (default: ~/.config/PVS-Studio/PVS-Studio.lic)
-    CONFIG "${PVS_CONFIG}"                # Path to PVS-Studio.cfg
+    CONFIG "${ARG_CONFIG}"                # Path to PVS-Studio.cfg
     #CFG_TEXT text                        # Embedded PVS-Studio.cfg
-    SUPPRESS_BASE "${PVS_SUPPRESS_BASE}"  # Path to suppress base file
+    SUPPRESS_BASE "${ARG_SUPPRESS_BASE}"  # Path to suppress base file
     #KEEP_COMBINED_PLOG                   # Do not delete combined plog file *.pvs.raw for further processing with plog-converter
 
     # Misc options:
-    DEPENDS ${PVS_DEPENDS}                # Additional target dependencies
+    DEPENDS ${ARG_DEPENDS}                # Additional target dependencies
     #SOURCES path...                      # List of source files to analyze
     #BIN path                             # Path to pvs-studio-analyzer (Unix) or CompilerCommandsAnalyzer.exe (Windows)
     #CONVERTER path                       # Path to plog-converter (Unix) or HtmlGenerator.exe (Windows)
-    C_FLAGS ${PVS_C_FLAGS}                # Additional C_FLAGS
-    CXX_FLAGS ${PVS_CXX_FLAGS}            # Additional CXX_FLAGS
-    ARGS ${PVS_ARGS}                      # Additional pvs-studio-analyzer/CompilerCommandsAnalyzer.exe flags
-    CONVERTER_ARGS ${PVS_CONVERTER_ARGS}  # Additional plog-converter/HtmlGenerator.exe flags
+    C_FLAGS ${ARG_C_FLAGS}                # Additional C_FLAGS
+    CXX_FLAGS ${ARG_CXX_FLAGS}            # Additional CXX_FLAGS
+    ARGS ${ARG_ARGS}                      # Additional pvs-studio-analyzer/CompilerCommandsAnalyzer.exe flags
+    CONVERTER_ARGS ${ARG_CONVERTER_ARGS}  # Additional plog-converter/HtmlGenerator.exe flags
   )
 endfunction()

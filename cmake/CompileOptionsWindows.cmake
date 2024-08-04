@@ -1,48 +1,5 @@
 #-------------------------------------------------------------------------------
-# Compile Definitions
-#-------------------------------------------------------------------------------
-
-# Adds additional compile definitions for a list of targets.
-#
-# @param TARGETS The list of target names to add compile definitions for.
-function(configure_compile_definitions)
-  # Parse the arguments passed to the function
-  cmake_parse_arguments("CD" "" "" "TARGETS" ${ARGN})
-
-  # If TARGETS is not set, print an error message and stop processing
-  if(NOT CD_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
-  endif()
-
-  # Loop over the list of targets, add compile definitions
-  foreach(target_name IN LISTS CD_TARGETS)
-    message(STATUS "Configuring compile definitions for target \"${target_name}\"")
-    target_compile_definitions("${target_name}"
-      PRIVATE
-        _MBCS
-
-        # Shared library
-        $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:
-          _USRDLL
-          _WINDLL
-          _WINDOWS
-        >
-
-        # Static library
-        $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,STATIC_LIBRARY>:
-          _LIB
-        >
-
-        # C++ exception handling
-        $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<NOT:$<BOOL:${ENABLE_EXCEPTIONS}>>,$<NOT:$<BOOL:${BUILD_UNIT_TESTS}>>>:
-          _HAS_EXCEPTIONS=0
-        >
-    )
-  endforeach()
-endfunction()
-
-#-------------------------------------------------------------------------------
-# Compile Options
+# Compiler Flags
 #-------------------------------------------------------------------------------
 
 set(CMAKE_C_FLAGS
@@ -114,43 +71,11 @@ add_compile_options(
   $<$<BOOL:${ENABLE_ASAN}>:/fsanitize=address>
 )
 
-# Adds additional compile options for a list of targets.
-#
-# @param TARGETS The list of target names to add compile options for.
-function(configure_compile_options)
-  # Parse the arguments passed to the function
-  cmake_parse_arguments("CO" "" "" "TARGETS" ${ARGN})
-
-  # If TARGETS is not set, print an error message and stop processing
-  if(NOT CO_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
-  endif()
-
-  # Loop over the list of targets, add compile options
-  foreach(target_name IN LISTS CO_TARGETS)
-    message(STATUS "Configuring compile options for target \"${target_name}\"")
-
-    target_compile_options("${target_name}"
-      PRIVATE
-        /W4                     # Output warning level
-        /permissive-            # Standard-conformance mode
-        /volatile:iso           # volatile keyword interpretation
-        /options:strict         # Unrecognized compiler options are errors
-
-        # Buffer security check.
-        $<IF:$<CONFIG:Debug>,/GS,/GS->
-
-        # Additional security checks
-        #
-        # Note: In recent versions of the MSVC compiler, the STL is compiled with warnings C4996.
-        # The /sdl flag elevates these warnings to errors. This flag should be enabled in the future.
-        #$<IF:$<CONFIG:Debug>,/sdl,/sdl->
-    )
-  endforeach()
-endfunction()
+# Enable Just My Code debugging for the Debug configuration in Visual Studio
+set(CMAKE_VS_JUST_MY_CODE_DEBUGGING $<CONFIG:Debug>)
 
 #-------------------------------------------------------------------------------
-# Link Options
+# Linker Flags
 #-------------------------------------------------------------------------------
 
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/INCREMENTAL")
@@ -191,6 +116,10 @@ add_link_options(
   $<$<BOOL:${ENABLE_LINK_TRACE}>:/VERBOSE:LIB>
 )
 
+#-------------------------------------------------------------------------------
+# Link Libraries
+#-------------------------------------------------------------------------------
+
 # Static libraries linked by default
 link_libraries(
   advapi32.lib
@@ -207,20 +136,100 @@ link_libraries(
   winspool.lib
 )
 
+# Set the MSVC runtime library for use by compilers targeting the MSVC ABI
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>$<$<NOT:$<BOOL:${LINK_STATIC_MSVC_RT}>>:DLL>")
+
+#-------------------------------------------------------------------------------
+# Configure Functions
+#-------------------------------------------------------------------------------
+
+# Adds additional compile definitions for a list of targets.
+#
+# @param TARGETS The list of target names to add compile definitions for.
+function(configure_compile_definitions)
+  # Parse the arguments passed to the function
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
+
+  # If TARGETS is not set, print an error message and stop processing
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
+  endif()
+
+  # Loop over the list of targets, add compile definitions
+  foreach(target_name IN LISTS ARG_TARGETS)
+    message(STATUS "Configuring compile definitions for target \"${target_name}\"")
+    target_compile_definitions("${target_name}"
+      PRIVATE
+        _MBCS
+
+        # Shared library
+        $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:
+          _USRDLL
+          _WINDLL
+          _WINDOWS
+        >
+
+        # Static library
+        $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,STATIC_LIBRARY>:
+          _LIB
+        >
+
+        # C++ exception handling
+        $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<NOT:$<BOOL:${ENABLE_EXCEPTIONS}>>,$<NOT:$<BOOL:${BUILD_UNIT_TESTS}>>>:
+          _HAS_EXCEPTIONS=0
+        >
+    )
+  endforeach()
+endfunction()
+
+# Adds additional compile options for a list of targets.
+#
+# @param TARGETS The list of target names to add compile options for.
+function(configure_compile_options)
+  # Parse the arguments passed to the function
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
+
+  # If TARGETS is not set, print an error message and stop processing
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
+  endif()
+
+  # Loop over the list of targets, add compile options
+  foreach(target_name IN LISTS ARG_TARGETS)
+    message(STATUS "Configuring compile options for target \"${target_name}\"")
+    target_compile_options("${target_name}"
+      PRIVATE
+        /W4                     # Output warning level
+        /permissive-            # Standard-conformance mode
+        /volatile:iso           # volatile keyword interpretation
+        /options:strict         # Unrecognized compiler options are errors
+
+        # Buffer security check.
+        $<IF:$<CONFIG:Debug>,/GS,/GS->
+
+        # Additional security checks
+        #
+        # Note: In recent versions of the MSVC compiler, the STL is compiled with warnings C4996.
+        # The /sdl flag elevates these warnings to errors. This flag should be enabled in the future.
+        #$<IF:$<CONFIG:Debug>,/sdl,/sdl->
+    )
+  endforeach()
+endfunction()
+
 # Adds additional link options for a list of targets.
 #
 # @param TARGETS The list of target names to add link options for.
 function(configure_link_options)
   # Parse the arguments passed to the function
-  cmake_parse_arguments("LO" "" "" "TARGETS" ${ARGN})
+  cmake_parse_arguments("ARG" "" "" "TARGETS" ${ARGN})
 
   # If TARGETS is not set, print an error message and stop processing
-  if(NOT LO_TARGETS)
-    message(FATAL_ERROR "TARGETS is not set.")
+  if(NOT ARG_TARGETS)
+    message(FATAL_ERROR "TARGETS argument is required.")
   endif()
 
   # Loop over the list of targets, add link options
-  foreach(target_name IN LISTS LO_TARGETS)
+  foreach(target_name IN LISTS ARG_TARGETS)
     message(STATUS "Configuring link options for target \"${target_name}\"")
   endforeach()
 endfunction()

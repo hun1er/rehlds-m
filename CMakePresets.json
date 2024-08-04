@@ -550,6 +550,9 @@
       "inherits": [
         "base",
         "windows"
+      ],
+      "targets": [
+        "pvs_analysis"
       ]
     },
     {
@@ -560,6 +563,13 @@
       "inherits": [
         "base",
         "windows"
+      ],
+      "targets": [
+        "hlds",
+        "common_tests",
+        "core_tests",
+        "model_tests",
+        "util_tests"
       ]
     },
     {
@@ -699,6 +709,9 @@
       "inherits": [
         "base",
         "linux"
+      ],
+      "targets": [
+        "pvs_analysis"
       ]
     },
     {
@@ -709,6 +722,13 @@
       "inherits": [
         "base",
         "linux"
+      ],
+      "targets": [
+        "hlds",
+        "common_tests",
+        "core_tests",
+        "model_tests",
+        "util_tests"
       ]
     }
   ],
@@ -730,6 +750,7 @@
     },
     {
       "name": "ninja-msvc-windows",
+      "displayName": "Complete Test Suite",
       "configurePreset": "unittest-ninja-msvc-windows",
       "inherits": [
         "base"
@@ -742,6 +763,7 @@
     },
     {
       "name": "ninja-gcc-linux",
+      "displayName": "Complete Test Suite",
       "configurePreset": "unittest-ninja-gcc-linux",
       "inherits": [
         "base"
