@@ -123,7 +123,8 @@
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
         "CMAKE_C_COMPILER_TARGET": "i386-pc-windows-msvc",
-        "CMAKE_CXX_COMPILER_TARGET": "i386-pc-windows-msvc"
+        "CMAKE_CXX_COMPILER_TARGET": "i386-pc-windows-msvc",
+        "CMAKE_CL_SHOWINCLUDES_PREFIX": "Note: including file:"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
