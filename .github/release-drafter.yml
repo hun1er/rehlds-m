@@ -1,5 +1,5 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
 
 template: |
   # What's Changed
@@ -9,169 +9,168 @@ template: |
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
 autolabeler:
-  - label: 'BREAKING CHANGE'
+  - label: "BREAKING CHANGE"
     title:
-      - '/!:/'
+      - "/!:/"
     body:
-      - '/BREAKING CHANGE:/i'
+      - "/BREAKING CHANGE:/i"
 
-  - label: 'bug'
+  - label: "bug"
     branch:
       - '/^fix\//'
     title:
       - '/^fix(\(.*\))?:/'
 
-  - label: 'build'
+  - label: "build"
     branch:
       - '/^build\//'
     title:
-      - '/^build:/'
+      - "/^build:/"
     files:
-      - '*.cmake'
-      - '*.rc.in'
-      - '**/cmake/**'
-      - 'CMakeLists.txt'
-      - 'CMakePresets.json'
+      - "*.cmake"
+      - "*.rc.in"
+      - "**/cmake/**"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
 
-  - label: 'chore'
+  - label: "chore"
     branch:
       - '/^chore\//'
     title:
       - '/^chore(\(.*\))?:/'
     files:
-      - '.clang-tidy'
-      - '.cppcheck_suppressions'
-      - '.gitattributes'
-      - '.gitignore'
-      - '.pvs-studio'
+      - ".clang-tidy"
+      - ".cppcheck_suppressions"
+      - ".gitattributes"
+      - ".gitignore"
+      - ".pvs-studio"
 
-  - label: 'ci'
+  - label: "ci"
     branch:
       - '/^ci\//'
     title:
-      - '/^ci:/'
+      - "/^ci:/"
     files:
-      - '.github/**'
+      - ".github/**"
 
-  - label: 'documentation'
+  - label: "documentation"
     branch:
       - '/^docs\//'
     title:
-      - '/^docs:/'
+      - "/^docs:/"
     files:
-      - '*.md'
-      - '*.rst'
-      - 'doc/**'
-      - 'docs/**'
-      - 'LICENSE'
+      - "*.md"
+      - "*.rst"
+      - "doc/**"
+      - "docs/**"
+      - "LICENSE"
 
-  - label: 'enhancement'
+  - label: "enhancement"
     branch:
       - '/^feat\//'
     title:
       - '/^feat(\(.*\))?:/'
 
-  - label: 'improvement'
+  - label: "improvement"
     branch:
       - '/^improve\//'
     title:
       - '/^improve(\(.*\))?:/'
 
-  - label: 'performance'
+  - label: "performance"
     branch:
       - '/^perf\//'
     title:
       - '/^perf(\(.*\))?:/'
 
-  - label: 'refactoring'
+  - label: "refactoring"
     branch:
       - '/^refactor\//'
     title:
       - '/^refactor(\(.*\))?:/'
 
-  - label: 'revert'
+  - label: "revert"
     branch:
       - '/^revert\//'
     title:
-      - '/^revert:/'
+      - "/^revert:/"
 
-  - label: 'security'
+  - label: "security"
     branch:
       - '/^security\//'
     title:
       - '/^security(\(.*\))?:/'
 
-  - label: 'style'
+  - label: "style"
     branch:
       - '/^style\//'
     title:
       - '/^style(\(.*\))?:/'
     files:
-      - '.clang-format'
-      - '.editorconfig'
+      - ".clang-format"
+      - ".editorconfig"
 
-  - label: 'tests'
+  - label: "tests"
     branch:
       - '/^test\//'
     title:
       - '/^test(\(.*\))?:/'
     files:
-      - '**/test/**'
-      - '**/tests/**'
+      - "**/test/**"
+      - "**/tests/**"
 
 categories:
-  - title: ':warning: Breaking changes'
+  - title: ":warning: Breaking changes"
     labels:
-      - 'BREAKING CHANGE'
+      - "BREAKING CHANGE"
 
-  - title: ':rocket: Features'
+  - title: ":rocket: Features"
     labels:
-      - 'enhancement'
+      - "enhancement"
 
-  - title: ':thumbsup: Improvements'
+  - title: ":thumbsup: Improvements"
     labels:
-      - 'improvement'
-      - 'performance'
-      - 'refactoring'
+      - "improvement"
+      - "performance"
 
-  - title: ':shield: Security'
+  - title: ":shield: Security"
     labels:
-      - 'security'
+      - "security"
 
-  - title: ':bug: Bug Fixes'
+  - title: ":bug: Bug Fixes"
     labels:
-      - 'bug'
+      - "bug"
 
-  - title: ':books: Documentation'
-    labels:
-      - 'documentation'
+  # - title: ":books: Documentation"
+  #   labels:
+  #     - "documentation"
 
-  - title: ':white_check_mark: Tests'
-    labels:
-      - 'tests'
+  # - title: ":white_check_mark: Tests"
+  #   labels:
+  #     - "tests"
 
-  - title: ':hammer: Maintenance'
+  - title: ":hammer: Maintenance"
     labels:
-      - 'build'
-      - 'chore'
-      - 'ci'
+      - "build"
+      - "chore"
+      - "refactoring"
 
 version-resolver:
   major:
     labels:
-      - 'BREAKING CHANGE'
+      - "BREAKING CHANGE"
 
   minor:
     labels:
-      - 'enhancement'
-      - 'improvement'
+      - "enhancement"
+      - "improvement"
 
   patch:
     labels:
-      - 'bug'
-      - 'performance'
-      - 'refactoring'
-      - 'security'
+      - "bug"
+      - "performance"
+      - "refactoring"
+      - "security"
 
 exclude-labels:
-  - 'skip-changelog'
+  - "skip-changelog"
