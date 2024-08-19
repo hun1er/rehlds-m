@@ -115,6 +115,12 @@ add_link_options(
 
   # UndefinedBehaviorSanitizer
   $<$<BOOL:${ENABLE_UBSAN}>:-fsanitize=undefined>
+
+  # Link the GCC runtime library statically
+  $<$<BOOL:${LINK_STATIC_GCC}>:-static-libgcc>
+
+  # Link the C++ standard library statically
+  $<$<BOOL:${LINK_STATIC_STDCPP}>:-static-libstdc++>
 )
 
 # Check if the project is not using the Gold or LLD linker
