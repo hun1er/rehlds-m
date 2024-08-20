@@ -72,6 +72,9 @@ add_compile_options(
   -fdata-sections     # Place each data in its own section
   -ffunction-sections # Place each function in its own section
 
+  # Use libc++ standard library
+  $<$<BOOL:${LINK_LIBCPP}>:-stdlib=libc++>
+
   # AddressSanitizer
   $<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>
 
@@ -109,6 +112,9 @@ add_link_options(
 
   # Discard all local symbols
   $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>,$<CONFIG:RelWithDebInfo>>:-Wl,--discard-all>
+
+  # Link libc++ as the C++ standard library instead of libstdc++
+  $<$<BOOL:${LINK_LIBCPP}>:-stdlib=libc++>
 
   # AddressSanitizer
   $<$<BOOL:${ENABLE_ASAN}>:-fsanitize=address>
