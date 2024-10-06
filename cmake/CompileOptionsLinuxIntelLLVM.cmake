@@ -81,7 +81,7 @@ function(configure_compile_options)
 
         $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>,$<CONFIG:RelWithDebInfo>>:
           -finline-functions      # Inline suitable functions
-          -freroll-loops          # Turn on loop reroller
+          -funroll-loops          # Turn on loop unroller
           -fvectorize             # Enable the loop vectorization passes
         >
     )
