@@ -45,6 +45,29 @@ option(ENABLE_LINK_TRACE        "Enable linker trace flag (detailed output of th
 option(OPTIMIZE_FOR_CURRENT_CPU "Generate code optimized for the current (native) processor"          OFF)
 
 #-------------------------------------------------------------------------------
+# Output Directories
+#-------------------------------------------------------------------------------
+
+if(NOT BIN_OUTPUT_DIR)
+  set(BIN_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/bin/${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}-$<CONFIG>")
+endif()
+
+#-------------------------------------------------------------------------------
+# System Information
+#-------------------------------------------------------------------------------
+
+include(ProcessorCount)
+ProcessorCount(PROCESSOR_CORES)
+
+if(PROCESSOR_CORES EQUAL 0)
+  set(PROCESSOR_CORES 2)
+endif()
+
+if(PROCESSOR_CORES GREATER 4)
+  set(PROCESSOR_CORES 4)
+endif()
+
+#-------------------------------------------------------------------------------
 # CMake Policies
 #-------------------------------------------------------------------------------
 
@@ -77,21 +100,6 @@ set(CMAKE_POLICY_DEFAULT_CMP0117 NEW)
 #-------------------------------------------------------------------------------
 # Build Configuration
 #-------------------------------------------------------------------------------
-
-include(ProcessorCount)
-ProcessorCount(PROCESSOR_CORES)
-
-if(PROCESSOR_CORES EQUAL 0)
-  set(PROCESSOR_CORES 2)
-endif()
-
-if(PROCESSOR_CORES GREATER 4)
-  set(PROCESSOR_CORES 4)
-endif()
-
-if(NOT BIN_OUTPUT_DIR)
-  set(BIN_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/bin/${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}-$<CONFIG>")
-endif()
 
 # Building shared libraries instead of static by default
 set(BUILD_SHARED_LIBS OFF)
@@ -177,21 +185,21 @@ endif()
 # Library Definitions
 #-------------------------------------------------------------------------------
 
-set(LIB_C             "c"                     )
-set(LIB_MATH          "m"                     )
-set(LIB_STDC_FS       "stdc++fs"              )
-set(LIB_THREADS       "Threads::Threads"      )
-set(LIB_WINSOCK       "WS2_32.Lib"            )
-set(LIB_FMT           "fmt::fmt"              )
-set(LIB_GTEST         "GTest::gtest_main"     )
-set(LIB_SPDLOG        "spdlog::spdlog"        )
-set(LIB_STRINGPY      "StringPy::stringpy"    )
-set(LIB_COMMON        "Common::common"        )
-set(LIB_CORE          "Core::core"            )
-set(LIB_MODEL         "Model::model"          )
-set(LIB_PRESENTER     "Presenter::presenter"  )
-set(LIB_UTIL          "Util::util"            )
-set(LIB_VIEW          "View::view"            )
+set(LIB_C         "c"                     )
+set(LIB_MATH      "m"                     )
+set(LIB_STDC_FS   "stdc++fs"              )
+set(LIB_THREADS   "Threads::Threads"      )
+set(LIB_WINSOCK   "WS2_32.Lib"            )
+set(LIB_FMT       "fmt::fmt"              )
+set(LIB_GTEST     "GTest::gtest_main"     )
+set(LIB_SPDLOG    "spdlog::spdlog"        )
+set(LIB_STRINGPY  "StringPy::stringpy"    )
+set(LIB_COMMON    "Common::common"        )
+set(LIB_CORE      "Core::core"            )
+set(LIB_MODEL     "Model::model"          )
+set(LIB_PRESENTER "Presenter::presenter"  )
+set(LIB_UTIL      "Util::util"            )
+set(LIB_VIEW      "View::view"            )
 
 #-------------------------------------------------------------------------------
 # Subdirectories
