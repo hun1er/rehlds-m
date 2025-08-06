@@ -1,5 +1,9 @@
 # ReHLDS-M
 
+**English** | **[Русский](https://github.com/hun1er/rehlds-m/blob/main/README.ru.md)**
+
+---
+
 Rehlds-m is a modern, cross-platform launcher for the Half-Life Dedicated Server (HLDS), written from scratch in C++17. It acts as a replacement for the standard `hlds.exe` executable, providing enhanced performance, stability, and a host of new features for server administrators, while maintaining full compatibility with the original engine libraries (`swds.dll` on Windows, `engine_i486.so` on Linux) and game mods.
 
 ## Key Features & Differences from original HLDS/ReHLDS
