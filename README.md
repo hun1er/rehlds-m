@@ -104,6 +104,21 @@ cmake --build build --config Release
 ```
 The compiled binary will be located in the `build/bin/` directory.
 
+### Advanced Build Options
+
+#### Optimizing for the Server's CPU
+
+You can compile the launcher with optimizations tailored for the specific processor where the server will run. This enables the use of additional instruction sets (beyond the required SSE4.2), which can result in an FPS boost.
+
+To enable this option, use the `-DOPTIMIZE_FOR_CURRENT_CPU=ON` flag in step 2 of the example above:
+
+```bash
+# 2. Configure the project with CMake, optimizing for the current machine's CPU
+cmake -B build -DOPTIMIZE_FOR_CURRENT_CPU=ON
+```
+
+**Warning:** Use this flag only if you are building the launcher on the same machine where it will be used.
+
 ## F.A.Q.
 
 -   **Q: UTF-8 characters are not displaying correctly in the console.**
