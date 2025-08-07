@@ -93,7 +93,7 @@ Rehlds-m — это современный, кроссплатформенный
 
 ```bash
 # 1. Клонируйте репозиторий
-git clone https://github.com/your-repo/rehlds-m.git
+git clone https://github.com/hun1er/rehlds-m.git
 cd rehlds-m
 
 # 2. Сконфигурируйте проект с помощью CMake
