@@ -93,7 +93,7 @@ To compile the project yourself, you will need:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-repo/rehlds-m.git
+git clone https://github.com/hun1er/rehlds-m.git
 cd rehlds-m
 
 # 2. Configure the project with CMake
